@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Dashboard</title>
+<style>
+  body { margin: 0; font-family: Arial, sans-serif; }
+  header { background: #f1f1f1; padding: 5px; border-bottom: 1px solid #ccc; }
+  header input { width: 98%; padding: 5px; }
+  .container { display: flex; height: calc(100vh - 40px); }
+  .sidebar { width: 220px; background: #eaeaea; padding: 10px; border-right: 1px solid #ccc; }
+  .sidebar img { width: 50px; height: 50px; border-radius: 50%; }
+  .sidebar p { margin: 5px 0; font-size: 14px; }
+  .module-list { list-style: none; padding: 0; margin-top: 20px; }
+  .module-list li { padding: 5px; display: flex; align-items: center; font-size: 14px; }
+  .module-list li input[type=checkbox] { margin-right: 5px; }
+  .sidebar button, .sidebar input[type=text] { width: 100%; padding: 8px; margin-top: 10px; font-size: 14px; }
+  .main { flex: 1; padding: 15px; overflow-y: auto; }
+  .module-banner { background: url('your-image.jpg') center/cover no-repeat; padding: 20px; color: red; font-size: 28px; font-weight: bold; }
+  .subtitle { font-size: 14px; color: black; margin-top: 5px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+  table th, table td { border-bottom: 1px solid #ccc; padding: 8px; text-align: left; font-size: 14px; }
+  .join-request { border: 1px solid #ccc; padding: 15px; margin-top: 20px; text-align: center; }
+  .join-request p { margin: 0 0 10px; }
+  .join-request button { margin: 5px; padding: 6px 12px; font-size: 14px; cursor: pointer; }
+</style>
+</head>
+<body>
+<header>
+  <input type="text" placeholder="URL" value="http://example.com" />
+</header>
+<div class="container">
+  <aside class="sidebar">
+    <div>
+      <img src="profile.jpg" alt="Profile">
+      <p><strong>Lionel Dictaton</strong><br>Instructor</p>
+    </div>
+    <ul class="module-list">
+      <li><input type="checkbox" checked> Module 1</li>
+      <li><input type="checkbox"> Module 2</li>
+      <li><input type="checkbox"> Module 3</li>
+      <li><input type="checkbox"> Module 4</li>
+      <li><input type="checkbox"> Practical 1</li>
+      <li><input type="checkbox"> Practical 2</li>
+    </ul>
+    <button>Log out</button>
+    <input type="text" placeholder="Class code">
+  </aside>
+  <main class="main">
+    <div class="module-banner">
+      MODULE 1
+      <div class="subtitle">Safety precautions inside the woodworking workshop</div>
+    </div>
+    <table>
+      <tr>
+        <th>List of Students</th>
+        <th>Video Assessment</th>
+        <th>Overall Assessment</th>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td>10/15</td>
+        <td>11/15</td>
+      </tr>
+    </table>
+    <div class="join-request">
+      <p><strong>Benj Paul Dve</strong> wants to join your class.</p>
+      <button>Accept</button>
+      <button>Decline</button>
+    </div>
+  </main>
+</div>
+</body>
+</html>

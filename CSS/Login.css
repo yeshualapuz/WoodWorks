@@ -1,0 +1,105 @@
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: #f7f3ef;
+  }
+
+  /* Left Panel */
+  .left-panel {
+    flex: 1;
+    background-color: #d2a679; /* Light wood */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    color: #4b2e14;
+  }
+  .left-panel h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+  }
+  .left-panel p {
+    font-size: 16px;
+    max-width: 300px;
+    text-align: center;
+  }
+
+  /* Right Panel */
+  .right-panel {
+    flex: 1;
+    background-color: #e8d5c4; /* Soft beige wood tone */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .login-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+    width: 300px;
+  }
+  .login-box h2 {
+    text-align: center;
+    color: #4b2e14;
+  }
+  .login-box label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #4b2e14;
+  }
+  .login-box input, .login-box select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #b68d5e;
+    border-radius: 4px;
+  }
+  .password-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #a0784a;
+  }
+  .login-box .forgot-password {
+    display: block;
+    margin-top: 8px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #a0784a;
+    text-align: right;
+  }
+  .login-box .forgot-password:hover {
+    text-decoration: underline;
+  }
+  .login-box button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    background-color: #a0784a;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .login-box button:hover {
+    background-color: #8b653a;
+  }
+  .signup-btn {
+    background-color: #d2a679;
+    margin-top: 10px;
+  }
+  .signup-btn:hover {
+    background-color: #b68d5e;
+  }

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up - S.A.W</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: #f7f3ef;
+  }
+
+  /* Left Panel */
+  .left-panel {
+    flex: 1;
+    background-color: #d2a679; /* Light wood */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    color: #4b2e14;
+  }
+  .left-panel h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+  }
+  .left-panel p {
+    font-size: 16px;
+    max-width: 300px;
+    text-align: center;
+  }
+
+  /* Right Panel */
+  .right-panel {
+    flex: 1;
+    background-color: #e8d5c4; /* Soft beige wood tone */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .signup-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+    width: 300px;
+  }
+  .signup-box h2 {
+    text-align: center;
+    color: #4b2e14;
+  }
+  .signup-box label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #4b2e14;
+  }
+  .signup-box input, .signup-box select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #b68d5e;
+    border-radius: 4px;
+  }
+  .toggle-password {
+    font-size: 12px;
+    cursor: pointer;
+    color: #a0784a;
+    margin-top: 5px;
+    display: inline-block;
+  }
+  .signup-box button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    background-color: #a0784a;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .signup-box button:hover {
+    background-color: #8b653a;
+  }
+</style>
+</head>
+<body>
+
+<!-- Left Panel -->
+<div class="left-panel">
+  <h1>Welcome to S.A.W</h1>
+  <p>School of Advanced Woodcraft — Sign up to start your woodworking journey.</p>
+</div>
+
+<!-- Right Panel -->
+<div class="right-panel">
+  <div class="signup-box">
+    <h2>Create Account</h2>
+
+    <label for="role">Sign up as:</label>
+    <select id="role">
+      <option value="student">Student</option>
+      <option value="teacher">Teacher</option>
+    </select>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="Enter your email">
+
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="Enter your password">
+    <span class="toggle-password" onclick="togglePassword('password')">Show Password</span>
+
+    <label for="retype">Retype Password</label>
+    <input type="password" id="retype" placeholder="Retype your password">
+    <span class="toggle-password" onclick="togglePassword('retype')">Show Password</span>
+
+    <button onclick="signup()">Sign Up</button>
+  </div>
+</div>
+
+<script>
+function validateEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(String(email).toLowerCase());
+}
+
+function signup() {
+  const email = document.getElementById('email').value.trim();
+  const pass = document.getElementById('password').value.trim();
+  const retype = document.getElementById('retype').value.trim();
+
+  if (!validateEmail(email)) {
+    alert("Please enter a valid email address.");
+    return;
+  }
+  if (pass.length < 6) {
+    alert("Password must be at least 6 characters long.");
+    return;
+  }
+  if (pass !== retype) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  alert("Account created successfully!");
+  window.location.href = "login two.html"; // Redirect back to login
+}
+
+function togglePassword(fieldId) {
+  const field = document.getElementById(fieldId);
+  field.type = field.type === "password" ? "text" : "password";
+}
+</script>
+
+</body>
+</html>
+
