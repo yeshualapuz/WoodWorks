@@ -24,7 +24,7 @@ function login() {
 }
 
 function signup() {
-  window.location.href = 'create account.html';
+  window.location.href = 'Account.html';
 }
 
 // Toggle show/hide password
