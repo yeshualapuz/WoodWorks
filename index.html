@@ -1,47 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - S.A.W</title>
-<link rel="stylesheet" href="CSS/Login.css">
-<script type="module" src="js/firebase-config.js" defer></script>
-<script type="module" src="JS/Login.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - S.A.W</title>
+    <link rel="stylesheet" href="CSS/login.css">
 </head>
 <body>
-
-<!-- Left Panel -->
-<div class="left-panel">
-  <h1>Welcome to S.A.W</h1>
-  <p>School of Advanced Woodcraft — Your learning journey in woodworking starts here.</p>
-</div>
-
-<!-- Right Panel -->
-<div class="right-panel">
-  <div class="login-box">
-    <h2>Login</h2>
-    <label for="role">Login as:</label>
-    <select id="role">
-      <option value="student">Student</option>
-      <option value="teacher">Teacher</option>
-    </select>
-
-    <label for="email">Email</label>
-    <input type="email" id="email" placeholder="Enter your email">
-
-    <label for="password">Password</label>
-    <div class="password-container">
-      <input type="password" id="password" placeholder="Enter your password">
-      <span class="toggle-password" onclick="togglePassword()">👁</span>
+    <!-- Left Panel -->
+    <div class="left-panel">
+        <h1>Welcome to S.A.W</h1>
+        <p>School of Advanced Woodcraft — Your learning journey in woodworking starts here.</p>
     </div>
 
-    <a href="forgot2.html" class="forgot-password">Forgot Password?</a>
+    <!-- Right Panel -->
+    <div class="right-panel">
+        <div class="login-box">
+            <h2>Login</h2>
+            
+            <label for="role">Login as:</label>
+            <select id="role">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+            </select>
 
-    <button onclick="login()">Login</button>
-    <button class="signup-btn" onclick="signup()">Sign Up</button>
-  </div>
-</div>
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
 
+            <label for="password">Password</label>
+            <div class="password-container">
+                <input type="password" id="password" placeholder="Enter your password" required>
+                <span class="toggle-password" onclick="togglePassword()">👁</span>
+            </div>
+
+            <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+
+            <button type="button" onclick="login()">Login</button>
+            <button type="button" class="signup-btn" onclick="redirectToSignup()">Sign Up</button>
+        </div>
+    </div>
+
+    <script src="JS/login.js"></script>
 </body>
 </html>
