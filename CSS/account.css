@@ -98,8 +98,7 @@ body {
     font-size: 0.85rem;
     cursor: pointer;
     color: #a0784a;
-    margin-top: 0.3rem;
-    display: inline-block;
+    margin-left: 0.5rem;
     text-decoration: underline;
     transition: color 0.3s ease;
 }
@@ -129,6 +128,25 @@ body {
 
 .signup-box button:active {
     transform: translateY(0);
+}
+
+.login-text {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #4b2e14;
+}
+
+.login-link {
+    color: #a0784a;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.login-link:hover {
+    color: #8b653a;
+    text-decoration: underline;
 }
 
 /* Responsive Design */

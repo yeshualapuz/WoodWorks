@@ -1,224 +1,109 @@
-'use strict';/** * Validates email format using regex * @param {string} email - The email to validate * @returns {boolean} - True if email is valid, false otherwise */function validateEmail(email) {    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;    return emailRegex.test(String(email).toLowerCase());}/** * Shows a message to the user * @param {string} message - The message to display * @param {string} type - The type of message ('error' or 'success') */function showMessage(message, type = 'error') {    // Remove existing message    const existingMessage = document.querySelector('.message');    if (existingMessage) {        existingMessage.remove();    }    // Create new message element    const messageDiv = document.createElement('div');    messageDiv.className = `message ${type}`;    messageDiv.textContent = message;    // Insert message before the first button    const loginBox = document.querySelector('.login-box');    const firstButton = loginBox.querySelector('button');    loginBox.insertBefore(messageDiv, firstButton);    // Auto-remove message after 5 seconds    setTimeout(() => {        if (messageDiv.parentNode) {            messageDiv.remove();        }    }, 5000);}/** * Sets loading state for buttons * @param {boolean} loading - Whether to show loading state */function setLoadingState(loading) {    const buttons = document.querySelectorAll('button');    const inputs = document.querySelectorAll('input, select');        buttons.forEach(button => {        button.disabled = loading;        if (loading) {            button.classList.add('loading');        } else {            button.classList.remove('loading');        }    });        inputs.forEach(input => {        input.disabled = loading;    });}/** * Handles the login process */async function login() {    const email = document.getElementById('email').value.trim();    const password = document.getElementById('password').value;    const role = document.getElementById('role').value;    // Clear previous messages    const existingMessage = document.querySelector('.message');    if (existingMessage) {        existingMessage.remove();    }    // Validate inputs    if (!email) {        showMessage("Please enter an email address.");        document.getElementById('email').focus();        return;    }    if (!validateEmail(email)) {        showMessage("Please enter a valid email address.");        document.getElementById('email').focus();        return;    }    if (!password) {        showMessage("Please enter your password.");        document.getElementById('password').focus();        return;    }    if (password.length < 6) {        showMessage("Password must be at least 6 characters long.");        document.getElementById('password').focus();        return;    }    // Set loading state    setLoadingState(true);    try {        // Simulate API call        await new Promise(resolve => setTimeout(resolve, 1500));        // Here you would typically make an API call to authenticate        console.log('Login attempt:', { email, role });        // Simulate login logic        const isValidCredentials = await validateCredentials(email, password, role);        if (isValidCredentials) {            showMessage("Login successful! Redirecting...", "success");                        // Store user info in sessionStorage            sessionStorage.setItem('userEmail', email);            sessionStorage.setItem('userRole', role);                        // Redirect based on role            setTimeout(() => {                if (role === 'teacher') {                    window.location.href = "teacher-dashboard.html";                } else {                    window.location.href = "student-dashboard.html";                }            }, 1500);        } else {            showMessage("Invalid email or password. Please try again.");        }    } catch (error) {        console.error('Login error:', error);        showMessage("An error occurred while logging in. Please try again.");    } finally {        setLoadingState(false);    }}/** * Simulates credential validation * @param {string} email - User email * @param {string} password - User password * @param {string} role - User role * @returns {Promise<boolean>} - Whether credentials are valid */async function validateCredentials(email, password, role) {    // This is a simulation - in a real app, this would be an API call    const validCredentials = [        { email: 'student@saw.edu', password: 'student123', role: 'student' },        { email: 'teacher@saw.edu', password: 'teacher123', role: 'teacher' },        { email: 'admin@saw.edu', password: 'admin123', role: 'teacher' }    ];    return validCredentials.some(cred =>         cred.email === email &&         cred.password === password &&         cred.role === role    );}/** * Toggles password visibility */function togglePassword() {    const passwordField = document.getElementById('password');    const toggleButton = document.querySelector('.toggle-password');        if (passwordField.type === "password") {        passwordField.type = "text";        toggleButton.textContent = "🙈";    } else {        passwordField.type = "password";        toggleButton.textContent = "👁";    }}/** * Redirects to signup page */function redirectToSignup() {    window.location.href = "Account.html";}/** * Initialize event listeners when the DOM is loaded */document.addEventListener('DOMContentLoaded', function() {    // Add enter key support for form submission    const inputs = document.querySelectorAll('input');    inputs.forEach(input => {        input.addEventListener('keypress', function(event) {            if (event.key === 'Enter') {                login();            }        });    });    // Add real-time validation feedback    document.getElementById('email').addEventListener('blur', function() {        const email = this.value.trim();        if (email && !validateEmail(email)) {            this.style.borderColor = '#e74c3c';        } else {            this.style.borderColor = '#b68d5e';        }    });    // Focus on email field when page loads    document.getElementById('email').focus();});/** * Logout function (for use in other pages) */function logout() {    sessionStorage.clear();    localStorage.clear();    window.location.href = "index.html";}'use strict';
+'use strict';
 
-/**
- * Validates email format using regex
- * @param {string} email - The email to validate
- * @returns {boolean} - True if email is valid, false otherwise
- */
+// Import Firebase SDK
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAubnoJNXMp0eJ9A2bQM1FaOfMlk6X0Les",
+    authDomain: "woodworks-dc7b3.firebaseapp.com",
+    projectId: "woodworks-dc7b3",
+    storageBucket: "woodworks-dc7b3.firebasestorage.app",
+    messagingSenderId: "355879129478",
+    appId: "1:355879129478:web:35abd92fa5ebb5c60d1c07"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+//Validates email format
 function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(String(email).toLowerCase());
 }
 
-/**
- * Shows a message to the user
- * @param {string} message - The message to display
- * @param {string} type - The type of message ('error' or 'success')
- */
-function showMessage(message, type = 'error') {
-    // Remove existing message
-    const existingMessage = document.querySelector('.message');
-    if (existingMessage) {
-        existingMessage.remove();
-    }
-
-    // Create new message element
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${type}`;
-    messageDiv.textContent = message;
-
-    // Insert message before the first button
-    const loginBox = document.querySelector('.login-box');
-    const firstButton = loginBox.querySelector('button');
-    loginBox.insertBefore(messageDiv, firstButton);
-
-    // Auto-remove message after 5 seconds
-    setTimeout(() => {
-        if (messageDiv.parentNode) {
-            messageDiv.remove();
-        }
-    }, 5000);
-}
-
-/**
- * Sets loading state for buttons
- * @param {boolean} loading - Whether to show loading state
- */
-function setLoadingState(loading) {
-    const buttons = document.querySelectorAll('button');
-    const inputs = document.querySelectorAll('input, select');
-    
-    buttons.forEach(button => {
-        button.disabled = loading;
-        if (loading) {
-            button.classList.add('loading');
-        } else {
-            button.classList.remove('loading');
-        }
-    });
-    
-    inputs.forEach(input => {
-        input.disabled = loading;
-    });
-}
-
-/**
- * Handles the login process
- */
-async function login() {
+//Handles login with Firebase
+function login() {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value;
 
-    // Clear previous messages
-    const existingMessage = document.querySelector('.message');
-    if (existingMessage) {
-        existingMessage.remove();
-    }
-
-    // Validate inputs
-    if (!email) {
-        showMessage("Please enter an email address.");
-        document.getElementById('email').focus();
+    if (!email || !validateEmail(email)) {
+        alert("Please enter a valid email address.");
         return;
     }
-
-    if (!validateEmail(email)) {
-        showMessage("Please enter a valid email address.");
-        document.getElementById('email').focus();
-        return;
-    }
-
     if (!password) {
-        showMessage("Please enter your password.");
-        document.getElementById('password').focus();
+        alert("Please enter your password.");
         return;
     }
 
-    if (password.length < 6) {
-        showMessage("Password must be at least 6 characters long.");
-        document.getElementById('password').focus();
-        return;
-    }
+    // Firebase login
+    signInWithEmailAndPassword(auth, email, password)
+        .then(async (userCredential) => {
+            const user = userCredential.user;
+            console.log("Logged in:", user.email);
 
-    // Set loading state
-    setLoadingState(true);
+            // 🔎 Get role from Firestore
+            const ref = doc(db, "users", user.uid);
+            const snapshot = await getDoc(ref);
 
-    try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
+            if (snapshot.exists()) {
+                const role = snapshot.data().role;
 
-        // Here you would typically make an API call to authenticate
-        console.log('Login attempt:', { email, role });
+                alert(`Login successful! Welcome ${role}.`);
 
-        // Simulate login logic
-        const isValidCredentials = await validateCredentials(email, password, role);
+                sessionStorage.setItem("userEmail", email);
+                sessionStorage.setItem("userRole", role);
 
-        if (isValidCredentials) {
-            showMessage("Login successful! Redirecting...", "success");
-            
-            // Store user info in sessionStorage
-            sessionStorage.setItem('userEmail', email);
-            sessionStorage.setItem('userRole', role);
-            
-            // Redirect based on role
-            setTimeout(() => {
-                if (role === 'teacher') {
-                    window.location.href = "teacher-dashboard.html";
+                // Redirect based on real role from Firestore
+                if (role === "teacher") {
+                    window.location.href = "teacher.html";
                 } else {
-                    window.location.href = "student-dashboard.html";
+                    window.location.href = "students.html";
                 }
-            }, 1500);
-        } else {
-            showMessage("Invalid email or password. Please try again.");
-        }
-
-    } catch (error) {
-        console.error('Login error:', error);
-        showMessage("An error occurred while logging in. Please try again.");
-    } finally {
-        setLoadingState(false);
-    }
+            } else {
+                alert("Error: No profile found for this account.");
+            }
+        })
+        .catch(error => {
+            console.error("Login error:", error.message);
+            alert(`Error: ${error.message}`);
+        });
 }
 
-/**
- * Simulates credential validation
- * @param {string} email - User email
- * @param {string} password - User password
- * @param {string} role - User role
- * @returns {Promise<boolean>} - Whether credentials are valid
- */
-async function validateCredentials(email, password, role) {
-    // This is a simulation - in a real app, this would be an API call
-    const validCredentials = [
-        { email: 'student@saw.edu', password: 'student123', role: 'student' },
-        { email: 'teacher@saw.edu', password: 'teacher123', role: 'teacher' },
-        { email: 'admin@saw.edu', password: 'admin123', role: 'teacher' }
-    ];
-
-    return validCredentials.some(cred => 
-        cred.email === email && 
-        cred.password === password && 
-        cred.role === role
-    );
-}
-
-/**
- * Toggles password visibility
- */
-function togglePassword() {
-    const passwordField = document.getElementById('password');
-    const toggleButton = document.querySelector('.toggle-password');
-    
-    if (passwordField.type === "password") {
-        passwordField.type = "text";
-        toggleButton.textContent = "🙈";
-    } else {
-        passwordField.type = "password";
-        toggleButton.textContent = "👁";
-    }
-}
-
-/**
- * Redirects to signup page
- */
-function redirectToSignup() {
-    window.location.href = "Account.html";
-}
-
-/**
- * Initialize event listeners when the DOM is loaded
- */
 document.addEventListener('DOMContentLoaded', function() {
-    // Add enter key support for form submission
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach(input => {
+    const loginBtn = document.getElementById('submit');
+
+    if (loginBtn) {
+        loginBtn.addEventListener("click", function(event) {
+            event.preventDefault();
+            login();
+        });
+    }
+
+    document.querySelectorAll('input').forEach(input => {
         input.addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
+                event.preventDefault();
                 login();
             }
         });
     });
 
-    // Add real-time validation feedback
-    document.getElementById('email').addEventListener('blur', function() {
-        const email = this.value.trim();
-        if (email && !validateEmail(email)) {
-            this.style.borderColor = '#e74c3c';
-        } else {
-            this.style.borderColor = '#b68d5e';
-        }
+    const emailInput = document.getElementById('email');
+    if (emailInput) {
+        emailInput.addEventListener('blur', function() {
+            const email = this.value.trim();
+            this.style.borderColor = (email && !validateEmail(email)) ? '#e74c3c' : '#b68d5e';
+        });
+
+        emailInput.focus();
+    }
+
+    // Password toggle listeners
+    document.querySelectorAll('.toggle-password').forEach(toggle => {
+        toggle.addEventListener('click', () => togglePassword(toggle.dataset.field));
     });
-
-    // Focus on email field when page loads
-    document.getElementById('email').focus();
 });
-
-/**
- * Logout function (for use in other pages)
- */
-function logout() {
-    sessionStorage.clear();
-    localStorage.clear();
-    window.location.href = "index.html";
-}}
