@@ -1,0 +1,233 @@
+/* General */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f7f3ef;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 100vh;
+  background: #d2a679;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  overflow-y: auto;
+}
+.sidebar button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px 15px; /* add left/right padding for full width */
+  text-align: left; /* enforce left alignment */
+  border-radius: 0; /* remove rounded corners so hover fills full width */
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 100%; /* make the button span full sidebar width */
+  box-sizing: border-box; /* include padding in width */
+}
+
+.sidebar button:hover {
+  background: rgba(255, 255, 255, 0.2); /* fill full width on hover */
+}
+
+.sidebar button.active {
+  background: #8b5e3c; /* fill full width for active */
+  font-weight: bold;
+}
+
+
+.profile {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.profile img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid #4b2e14;
+}
+
+.profile p {
+  margin: 5px 0;
+  font-weight: bold;
+}
+
+.module-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.module-list li {
+  margin-bottom: 8px;
+}
+
+.module-list input {
+  margin-right: 8px;
+}
+
+.logout-btn {
+  margin-top: auto;
+  background-color: #b68d5e;
+  border: none;
+  padding: 10px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.logout-btn:hover {
+  background-color: #a0784a;
+}
+
+/* Main Container */
+.main-container {
+  margin-left: 220px; /* width of sidebar + spacing */
+}
+
+/* Main Content */
+.main-content {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Center content */
+.center-content {
+  flex: 2;
+}
+
+/* Module banner */
+.module-banner {
+  background-color: #b68d5e;
+  padding: 15px;
+  border-radius: 6px;
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Cards */
+.module-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.module-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  background-color: #f0e6dc;
+  border: 2px solid #b68d5e;
+  border-radius: 8px;
+  width: 150px;
+  height: 150px;
+  padding: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.module-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.module-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+.subject-name {
+  font-weight: bold;
+  color: #4b2e14;
+  text-align: center;
+}
+
+/* Right-side instructor panel */
+.instructor-section {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  gap: 20px;
+}
+
+.instructor-box {
+  background-color: #e8d5c4;
+  border: 2px solid #c2a27a;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.instructor-box h3 {
+  margin-top: 0;
+  font-size: 16px;
+  border-bottom: 1px solid #c2a27a;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+}
+
+.instructor-box textarea {
+  width: 100%;
+  height: 60px;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #b68d5e;
+  resize: none;
+}
+
+.submit-btn {
+  background-color: #7a4b23;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+.submit-btn:hover {
+  background-color: #5c371a;
+}
+
+/* Announcements */
+.announcement-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.announcement {
+  background-color: #e8d5c4;
+  border: 2px solid #c2a27a;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .main-content {
+    flex-direction: column;
+  }
+  .center-content,
+  .instructor-section {
+    width: 100%;
+  }
+}
