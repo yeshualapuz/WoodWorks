@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, updateDoc, arrayUnion, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAubnoJNXMp0eJ9A2bQM1FaOfMlk6X0Les",
@@ -12,6 +13,53 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+const btnCourses = document.getElementById("btn-courses");
+const btnStudents = document.getElementById("btn-students");
+const btnSubmissions = document.getElementById("btn-submissions");
+const btnAnnouncements = document.getElementById("btn-announcements");
+
+const sectionCourses = document.getElementById("section-courses");
+const sectionStudents = document.getElementById("section-students");
+const sectionSubmissions = document.getElementById("section-submissions");
+const sectionAnnouncements = document.getElementById("section-announcements");
+
+const sections = {
+  courses: sectionCourses,
+  students: sectionStudents,
+  submissions: sectionSubmissions,
+  announcements: sectionAnnouncements
+};
+
+const buttons = {
+  courses: btnCourses,
+  students: btnStudents,
+  submissions: btnSubmissions,
+  announcements: btnAnnouncements
+};
+
+function setActiveSection(activeKey) {
+  Object.values(sections).forEach(sec => sec.hidden = true);
+  sections[activeKey].hidden = false;
+
+  Object.values(buttons).forEach(btn => {
+    btn.classList.remove("active");
+    btn.setAttribute("aria-pressed", "false");
+  });
+
+  buttons[activeKey].classList.add("active");
+  buttons[activeKey].setAttribute("aria-pressed", "true");
+}
+
+// Event listeners
+btnCourses.addEventListener("click", () => setActiveSection("courses"));
+btnStudents.addEventListener("click", () => setActiveSection("students"));
+btnSubmissions.addEventListener("click", () => setActiveSection("submissions"));
+btnAnnouncements.addEventListener("click", () => setActiveSection("announcements"));
+
+// Default: show Courses section
+setActiveSection("courses");
+
 
 const coursesTbody = document.getElementById("courses-tbody");
 
@@ -77,9 +125,9 @@ function renderCourses(courses) {
             </thead>
             <tbody class="modules-tbody"></tbody>
           </table>
-          <button class="add-lesson-btn" style="margin-top:10px;">Add Lesson</button>
-          <button class="add-quiz-btn" style="margin-top:10px;">Add Quiz</button>
-          <button class="delete-course-btn" style="margin-top:10px; background:#e74c3c; color:#fff;">Delete Course</button>
+          <button class="add-lesson-btn">Add Lesson</button>
+          <button class="add-quiz-btn">Add Quiz</button>
+          <button class="delete-course-btn">Delete Course</button>
         </div>
       </td>
     `;
@@ -141,13 +189,22 @@ async function addLesson(courseId) {
   });
 }
 
+
+
+
 async function addQuiz(courseId) {
   openModal(`
     <form id="quiz-form">
       <label>Quiz Title</label><br>
       <input name="title" required><br><br>
+      
       <div id="questions-container"></div>
       <button type="button" id="add-question">+ Add Question</button><br><br>
+      
+      <div id="questions-info" style="margin:10px 0; font-weight:bold; color:#6b4f2d;">
+        Number of questions: 0
+      </div>
+
       <button type="submit">Save Quiz</button>
     </form>
   `, async (data) => {
@@ -173,19 +230,22 @@ async function addQuiz(courseId) {
     fetchCourses();
   });
 
+  let questionCount = 0;
+
   document.getElementById("add-question").addEventListener("click", () => {
+    questionCount++;
     const container = document.getElementById("questions-container");
     const div = document.createElement("div");
     div.classList.add("question");
     div.innerHTML = `
-      <label>Question</label><br>
-      <input name="question" required><br><br>
+      <h4 style="margin-bottom:5px; color:#6b4f2d;">Question ${questionCount}</h4>
+      <textarea name="question" class="question-textarea" required></textarea><br><br>
       <label>Option A</label><br><input name="option" required><br><br>
       <label>Option B</label><br><input name="option" required><br><br>
       <label>Option C</label><br><input name="option"><br><br>
       <label>Option D</label><br><input name="option"><br><br>
       <label>Correct Answer</label><br>
-      <select name="correct">
+      <select name="correct" class="correct-select">
         <option value="A">A</option>
         <option value="B">B</option>
         <option value="C">C</option>
@@ -194,8 +254,13 @@ async function addQuiz(courseId) {
       <hr>
     `;
     container.appendChild(div);
+
+    // update counter display (at the bottom)
+    document.getElementById("questions-info").textContent = 
+      `Number of questions: ${questionCount}`;
   });
 }
+
 
 async function deleteCourse(courseId) {
   if(!confirm("Delete this course?")) return;
@@ -250,4 +315,18 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchCourses();
   const addCourseBtn = document.getElementById("add-course-btn");
   if(addCourseBtn) addCourseBtn.addEventListener("click", () => addCourse());
+});
+
+
+
+
+const auth = getAuth();
+
+document.getElementById("logout-btn").addEventListener("click", () => {
+  signOut(auth).then(() => {
+    // Successful logout → go to login page
+    window.location.href = "account.html";
+  }).catch((error) => {
+    console.error("Logout error:", error);
+  });
 });
