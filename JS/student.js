@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const sectionCourses = document.getElementById("section-courses");
   const sectionAnnouncements = document.getElementById("section-announcements");
 
+  
+
   function setActive(activeBtn, activeSection) {
     [btnCourses, btnAnnouncements].forEach(btn => btn.classList.remove("active"));
     activeBtn.classList.add("active");

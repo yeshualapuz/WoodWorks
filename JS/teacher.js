@@ -1,6 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, arrayUnion, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { 
+  getFirestore, collection, getDocs, doc, updateDoc, arrayUnion, addDoc, deleteDoc, 
+  query, where 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAubnoJNXMp0eJ9A2bQM1FaOfMlk6X0Les",
@@ -13,6 +16,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth();
 
 const btnCourses = document.getElementById("btn-courses");
 const btnStudents = document.getElementById("btn-students");
@@ -51,19 +55,15 @@ function setActiveSection(activeKey) {
   buttons[activeKey].setAttribute("aria-pressed", "true");
 }
 
-// Event listeners
 btnCourses.addEventListener("click", () => setActiveSection("courses"));
 btnStudents.addEventListener("click", () => setActiveSection("students"));
 btnSubmissions.addEventListener("click", () => setActiveSection("submissions"));
 btnAnnouncements.addEventListener("click", () => setActiveSection("announcements"));
 
-// Default: show Courses section
 setActiveSection("courses");
-
 
 const coursesTbody = document.getElementById("courses-tbody");
 
-// Modal helper function to open modal with form content and handle submit
 function openModal(contentHtml, onSubmit) {
   const modal = document.getElementById("modal");
   const body = document.getElementById("modal-body");
@@ -89,11 +89,20 @@ function openModal(contentHtml, onSubmit) {
 }
 
 async function fetchCourses() {
+  const user = auth.currentUser;
+  if (!user) {
+    console.warn("No user logged in, cannot fetch courses.");
+    return;
+  }
+
+  const q = query(collection(db, "courses"), where("userId", "==", user.uid));
+  const querySnapshot = await getDocs(q);
+
   const courses = [];
-  const querySnapshot = await getDocs(collection(db, "courses"));
   querySnapshot.forEach(docSnap => {
     courses.push({ id: docSnap.id, ...docSnap.data() });
   });
+
   renderCourses(courses);
 }
 
@@ -189,9 +198,6 @@ async function addLesson(courseId) {
   });
 }
 
-
-
-
 async function addQuiz(courseId) {
   openModal(`
     <form id="quiz-form">
@@ -255,12 +261,10 @@ async function addQuiz(courseId) {
     `;
     container.appendChild(div);
 
-    // update counter display (at the bottom)
     document.getElementById("questions-info").textContent = 
       `Number of questions: ${questionCount}`;
   });
 }
-
 
 async function deleteCourse(courseId) {
   if(!confirm("Delete this course?")) return;
@@ -300,31 +304,39 @@ async function addCourse() {
       <button type="submit">Save Course</button>
     </form>
   `, async (data) => {
+    const user = auth.currentUser;
+    if (!user) {
+      alert("You must be logged in to create a course.");
+      return;
+    }
+
     await addDoc(collection(db, "courses"), {
       name: data.name,
       students: 0,
       modules: [],
       status: "Active",
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      userId: user.uid // 👈 link course to teacher
     });
     fetchCourses();
   });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  fetchCourses();
   const addCourseBtn = document.getElementById("add-course-btn");
-  if(addCourseBtn) addCourseBtn.addEventListener("click", () => addCourse());
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      fetchCourses();
+      if(addCourseBtn) addCourseBtn.addEventListener("click", () => addCourse());
+    } else {
+      window.location.href = "account.html";
+    }
+  });
 });
-
-
-
-
-const auth = getAuth();
 
 document.getElementById("logout-btn").addEventListener("click", () => {
   signOut(auth).then(() => {
-    // Successful logout → go to login page
     window.location.href = "account.html";
   }).catch((error) => {
     console.error("Logout error:", error);
