@@ -1,0 +1,165 @@
+{
+  "title": "Woodworking Pre-Test and Post-Test",
+  "questions": [
+    {
+      "q": "Softwoods usually come from trees that are:",
+      "options": ["Evergreen", "Deciduous", "Tropical hardwoods", "Shrubs"],
+      "answer": "Evergreen"
+    },
+    {
+      "q": "Veneers are best described as:",
+      "options": [
+        "Large logs of timber",
+        "Thin slices of wood glued to surfaces",
+        "Recycled wood dust",
+        "Unfinished lumber"
+      ],
+      "answer": "Thin slices of wood glued to surfaces"
+    },
+    {
+      "q": "Which is the first safety practice in a woodworking workshop?",
+      "options": ["Use expensive tools", "Wear proper protective gear", "Cut wood faster", "Store tools anywhere"],
+      "answer": "Wear proper protective gear"
+    },
+    {
+      "q": "Why is maintaining tools important?",
+      "options": [
+        "It prevents rust and prolongs life",
+        "It makes tools more colorful",
+        "It avoids carrying heavy tools",
+        "It reduces wood cost"
+      ],
+      "answer": "It prevents rust and prolongs life"
+    },
+    {
+      "q": "Which saw is known for making curved cuts?",
+      "options": ["Coping saw", "Table saw", "Band saw", "Back saw"],
+      "answer": "Coping saw"
+    },
+    {
+      "q": "A panel saw is most often used to cut:",
+      "options": ["Plastic", "Metal sheets", "Large wooden boards", "Thin veneers"],
+      "answer": "Large wooden boards"
+    },
+    {
+      "q": "A block plane is mainly used for:",
+      "options": ["Cutting joints", "Smoothing end grain", "Measuring wood length", "Marking edges"],
+      "answer": "Smoothing end grain"
+    },
+    {
+      "q": "Which specialized plane is designed for cleaning grooves?",
+      "options": ["Scraping plane", "Router plane", "Bench plane", "Shoulder plane"],
+      "answer": "Router plane"
+    },
+    {
+      "q": "The chisel best suited for deep square holes is:",
+      "options": ["Bevel-edged", "Mortise", "Paring", "Skew"],
+      "answer": "Mortise"
+    },
+    {
+      "q": "Japanese chisels differ from Western chisels mainly in:",
+      "options": ["Their steel composition", "Their handle color", "Their weight only", "Their use only for bamboo"],
+      "answer": "Their steel composition"
+    },
+    {
+      "q": "Which tool measures internal and external diameters?",
+      "options": ["Tape measure", "Vernier caliper", "Ruler", "Divider"],
+      "answer": "Vernier caliper"
+    },
+    {
+      "q": "A bradawl is used for:",
+      "options": ["Boring starter holes in wood", "Cutting veneers", "Leveling wood surfaces", "Sanding"],
+      "answer": "Boring starter holes in wood"
+    },
+    {
+      "q": "A sliding bevel is used to:",
+      "options": ["Check 90° angles", "Mark and transfer angles", "Measure wood thickness", "Sharpen edges"],
+      "answer": "Mark and transfer angles"
+    },
+    {
+      "q": "Which tool is best for checking dovetail joints?",
+      "options": ["Try square", "Marking gauge", "Dovetail marker", "Combination square"],
+      "answer": "Dovetail marker"
+    },
+    {
+      "q": "Which sander is best for curved surfaces?",
+      "options": ["Random orbital", "Palm sander", "Spindle sander", "Belt sander"],
+      "answer": "Spindle sander"
+    },
+    {
+      "q": "“Abranet” is a type of:",
+      "options": ["Glue", "Sandpaper", "Clamp", "Drill bit"],
+      "answer": "Sandpaper"
+    },
+    {
+      "q": "The simplest joint often taught to beginners is the:",
+      "options": ["Dovetail joint", "Cross-halving joint", "Corner-halving joint", "Butt joint"],
+      "answer": "Butt joint"
+    },
+    {
+      "q": "Preparing wood includes which step?",
+      "options": ["Sanding", "Painting immediately", "Applying glue", "Adding hinges"],
+      "answer": "Sanding"
+    },
+    {
+      "q": "The mortise-and-tenon joint is valued for its:",
+      "options": ["Simplicity", "Decorative edge", "Strength and stability", "Ability to curve wood"],
+      "answer": "Strength and stability"
+    },
+    {
+      "q": "A comb joint is another name for:",
+      "options": ["Finger joint", "Lap joint", "Miter joint", "Dado joint"],
+      "answer": "Finger joint"
+    },
+    {
+      "q": "Which clamp is best for wide panels?",
+      "options": ["C-clamp", "F-clamp", "Sash clamp", "Speed clamp"],
+      "answer": "Sash clamp"
+    },
+    {
+      "q": "The strongest bond for woodwork is usually from:",
+      "options": ["Tape", "Hot glue", "Wood glue (PVA)", "Nails"],
+      "answer": "Wood glue (PVA)"
+    },
+    {
+      "q": "Which drill allows precise vertical holes?",
+      "options": ["Power drill", "Drill press", "Hand drill", "Cordless driver"],
+      "answer": "Drill press"
+    },
+    {
+      "q": "Hinges are best classified as:",
+      "options": ["Screws", "Pins", "Fasteners", "Abrasives"],
+      "answer": "Fasteners"
+    },
+    {
+      "q": "A scraper is mainly used to:",
+      "options": ["Cut dovetails", "Level uneven wood", "Drill holes", "Measure joints"],
+      "answer": "Level uneven wood"
+    },
+    {
+      "q": "A common problem when staining wood is:",
+      "options": ["Blotching", "Tight joints", "Oversized holes", "Warped clamps"],
+      "answer": "Blotching"
+    },
+    {
+      "q": "Which sequence is most correct in woodworking?",
+      "options": ["Saw → Plane → Finish", "Glue → Drill → Saw", "Sand → Cut → Plane", "Finish → Saw → Drill"],
+      "answer": "Saw → Plane → Finish"
+    },
+    {
+      "q": "Which describes the essence of woodworking safety?",
+      "options": ["Work fast and smart", "Proper tools, proper handling, proper care", "Use any tool available", "Avoid using safety gear"],
+      "answer": "Proper tools, proper handling, proper care"
+    },
+    {
+      "q": "Which joint is known as the “king of joints” for strength and durability?",
+      "options": ["Mortise-and-tenon", "Dovetail", "Butt joint", "Comb joint"],
+      "answer": "Dovetail"
+    },
+    {
+      "q": "Before applying varnish, the final step is:",
+      "options": ["Drilling", "Sawing", "Gluing", "Sanding"],
+      "answer": "Sanding"
+    }
+  ]
+}

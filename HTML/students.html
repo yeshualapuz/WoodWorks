@@ -1,95 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Dashboard - S.A.W</title>
-<link rel="stylesheet" href="../CSS/student.css">
-<script type="module" src="../JS/student.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>S.A.W Woodworking Dashboard</title>
+  <link rel="stylesheet" href="..\CSS\student.css" />
+  <style>
+    .tab { display: none; }
+    .tab.active { display: contents; }
+  </style>
 </head>
 <body>
 
-<!-- Sidebar -->
-<div class="sidebar">
-  <h2>Students Notebook</h2>
-  <div class="profile">
-    <img src="student.jpg" alt="Student Photo">
-    <p>Juan Dela Cruz</p>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>S.A.W Woodworking</h2>
+      <nav>
+        <a href="#" class="active" onclick="showTab(event, 'workshop')">My Workshop</a>
+        <a href="#" onclick="showTab(event, 'courses')">Woodworking Courses</a>
+        <a href="#" onclick="showTab(event, 'projects')">My Projects</a>
+        <a href="#" onclick="showTab(event, 'help')">Help</a>
+        <a href="#" onclick="showTab(event, 'contact')">Contact Us</a>
+      </nav>
+      <button class="logout-btn" onclick="logout()">Log Out</button>
+      <div class="footer">SeanPackham</div>
+    </aside>
 
-    <button id="btn-courses" class="active" aria-pressed="true">📚 Courses</button>
-    <button id="btn-announcements" aria-pressed="false">📢 Announcements</button>
+    <main class="main">
+      <section id="workshop" class="tab active">
+        <div class="welcome">
+          Hey Sean Packham <span style="font-weight: 400;">(Student)</span>, you were last working on
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="title">
+              <img src="https://img.icons8.com/ios-filled/24/8B5E3C/code-file.png" alt="icon" />
+              Wood Basics
+            </div>
+            <div class="module-course">
+              Module <strong>Woodworking 101</strong><br />
+              Course <strong>Wood Basics - Intro to Joinery</strong>
+            </div>
+            <div class="stats">
+              <div class="stat"><div class="number">1</div>Correct</div>
+              <div class="stat"><div class="number">1</div>Answered</div>
+              <div class="stat"><div class="number">5</div>Assessments</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="title">
+              <img src="https://img.icons8.com/ios-filled/24/8B5E3C/synchronize.png" alt="icon" />
+              Sanding Techniques
+            </div>
+            <div class="module-course">
+              Module <strong>Finishing</strong><br />
+              Course <strong>Advanced Woodworking</strong>
+            </div>
+            <div class="stats">
+              <div class="stat"><div class="number">0</div>Correct</div>
+              <div class="stat"><div class="number">0</div>Answered</div>
+              <div class="stat"><div class="number">8</div>Assessments</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="title">
+              <img src="https://img.icons8.com/ios-filled/24/8B5E3C/js.png" alt="icon" />
+              Wood Joinery
+            </div>
+            <div class="module-course">
+              Module <strong>Joinery</strong><br />
+              Course <strong>Woodworking Basics</strong>
+            </div>
+            <div class="stats">
+              <div class="stat"><div class="number">0</div>Correct</div>
+              <div class="stat"><div class="number">1</div>Answered</div>
+              <div class="stat"><div class="number">8</div>Assessments</div>
+            </div>
+          </div>
+        </div>
+
+        <section class="filters">
+          <label for="class-select">Workshop</label>
+          <select id="class-select">
+            <option value="woodworking-101" selected>Woodworking 101</option>
+            <option value="wood-finishing">Wood Finishing</option>
+            <option value="joinery-basics">Joinery Basics</option>
+          </select>
+
+          <label for="course-select">Course</label>
+          <select id="course-select">
+            <option value="wood-basics" selected>Wood Basics - Intro to Joinery</option>
+            <option value="advanced-woodworking">Advanced Woodworking</option>
+            <option value="woodworking-basics">Woodworking Basics</option>
+          </select>
+
+          <label for="module-select">Module</label>
+          <select id="module-select">
+            <option value="woodworking-101" selected>Woodworking 101</option>
+            <option value="sanding">Sanding</option>
+            <option value="joinery-playground">Joinery Playground</option>
+          </select>
+        </section>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Points (%)</th>
+              <th>Correct</th>
+              <th>Answered</th>
+              <th>Assessments</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="units-tbody">
+          </tbody>
+        </table>
+      </section>
+
+    <section id="courses" class="tab">
+      <h2>Woodworking Courses</h2>
+
+      <div class="lessons-list">
+        <h3>Lessons</h3>
+        <ul>
+          <li>Introduction to Woodworking</li>
+          <li>Wood Types and Properties</li>
+          <li>Basic Joinery Techniques</li>
+          <li>Sanding and Finishing</li>
+        </ul>
+      </div>
+
+      <div class="quizzes-list" style="margin-top: 20px;">
+        <h3>Quizzes</h3>
+        <div id="quiz-container">
+        <ul>
+          <li><button onclick="startQuiz('woodworking')">Wood Basics Quiz</button></li>
+          <li><button onclick="startQuiz('woodworking')">Joinery Quiz</button></li>
+          <li><button onclick="startQuiz('woodworking')">Finishing Quiz</button></li>
+        </ul>
+        </div>
+      </div>
+    </section>
+
+
+      <section id="projects" class="tab">
+        <h2>My Projects</h2>
+        <p>Projects content goes here...</p>
+      </section>
+
+      <section id="help" class="tab">
+        <h2>Help</h2>
+        <p>Help content goes here...</p>
+      </section>
+
+      <section id="contact" class="tab">
+        <h2>Contact Us</h2>
+        <p>Contact info goes here...</p>
+      </section>
+
+    </main>
   </div>
 
-  <ul class="module-list">
-    <li><input type="checkbox"> Module 1</li>
-    <li><input type="checkbox"> Module 2</li>
-    <li><input type="checkbox"> Module 3</li>
-    <li><input type="checkbox"> Module 4</li>
-  </ul>
-  <button class="logout-btn" id="logoutBtn">Log Out</button>
-</div>
+  <script>
+    function showTab(event, tabId) {
+      if (event && event.preventDefault) event.preventDefault();
 
-<!-- Main Content -->
-<div class="main-container">
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      document.querySelectorAll('aside nav a').forEach(link => link.classList.remove('active'));
+      if (event && event.currentTarget) event.currentTarget.classList.add('active');
+    }
 
-  <!-- Courses Section -->
-  <section id="section-courses">
-    <div class="main-content">
-      <!-- Center content -->
-      <div class="center-content">
-        <div class="module-banner">Courses</div>
+    function logout() {
+      alert("Logging out...");
+    }
+  </script>
 
-        <div class="module-cards">
-          <a href="layout.html" class="module-card">
-            <img src="subject.jpg" alt="Woodworking">
-            <div class="subject-name">Woodworking</div>
-          </a>
-          <a href="layout.html" class="module-card">
-            <img src="subject2.jpg" alt="Safety & Workshop">
-            <div class="subject-name">Safety & Workshop</div>
-          </a>
-          <a href="layout.html" class="module-card">
-            <img src="subject3.jpg" alt="Carpentry Basics">
-            <div class="subject-name">Carpentry Basics</div>
-          </a>
-        </div>
-      </div>
-
-      <!-- Right-side instructor panel -->
-      <div class="instructor-section">
-        <div class="instructor-box">
-          <h3>Student Inquiry</h3>
-          <textarea id="studentQuestion" placeholder="Type your question here..."></textarea>
-          <button class="submit-btn">Submit</button>
-          <div id="studentQuestionsList"></div>
-        </div>
-
-        <div class="instructor-box">
-          <h3>Instructor's Comments</h3>
-          <div id="instructorFeedback">Feedback will appear here.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Announcements Section -->
-  <section id="section-announcements" hidden>
-    <div class="main-content">
-      <div class="center-content">
-        <div class="module-banner">Announcements</div>
-        <div class="announcement-list">
-          <div class="announcement">
-            <strong>Teacher A:</strong> Safety rules updated in Workshop 1.
-          </div>
-          <div class="announcement">
-            <strong>Teacher B:</strong> New assignment for Module 2 is posted.
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-</div>
-
+  <script src="/JS/student.js"></script>
 </body>
 </html>
