@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>S.A.W Woodworking Dashboard</title>
-  <link rel="stylesheet" href="..\CSS\student.css" />
+  <link rel="stylesheet" href="CSS\student.css" />
   <style>
     .tab { display: none; }
     .tab.active { display: contents; }
@@ -22,7 +22,8 @@
         <a href="#" onclick="showTab(event, 'help')">Help</a>
         <a href="#" onclick="showTab(event, 'contact')">Contact Us</a>
       </nav>
-      <button class="logout-btn" onclick="logout()">Log Out</button>
+      <button class="logout-btn" id="logout-btn" onclick="logout()">Log Out</button>
+
       <div class="footer">SeanPackham</div>
     </aside>
 
@@ -121,30 +122,31 @@
         </table>
       </section>
 
-    <section id="courses" class="tab">
-      <h2>Woodworking Courses</h2>
+<section id="courses" class="tab">
+  <h2>Woodworking Courses</h2>
 
-      <div class="lessons-list">
-        <h3>Lessons</h3>
-        <ul>
-          <li>Introduction to Woodworking</li>
-          <li>Wood Types and Properties</li>
-          <li>Basic Joinery Techniques</li>
-          <li>Sanding and Finishing</li>
-        </ul>
-      </div>
+  <div class="lessons-list">
+    <h3>Lessons</h3>
+    <ul>
+      <li>Introduction to Woodworking</li>
+      <li>Wood Types and Properties</li>
+      <li>Basic Joinery Techniques</li>
+      <li>Sanding and Finishing</li>
+    </ul>
+  </div>
 
-      <div class="quizzes-list" style="margin-top: 20px;">
-        <h3>Quizzes</h3>
-        <div id="quiz-container">
-        <ul>
-          <li><button onclick="startQuiz('woodworking')">Wood Basics Quiz</button></li>
-          <li><button onclick="startQuiz('woodworking')">Joinery Quiz</button></li>
-          <li><button onclick="startQuiz('woodworking')">Finishing Quiz</button></li>
-        </ul>
-        </div>
-      </div>
-    </section>
+  <div class="quizzes-list" style="margin-top: 20px;">
+    <h3>Quizzes</h3>
+    <div id="quiz-container">
+      <ul>
+        <li><button onclick="startQuiz('woodworking')">Wood Basics Quiz</button></li>
+        <li><button onclick="startQuiz('woodworking')">Joinery Quiz</button></li>
+        <li><button onclick="startQuiz('woodworking')">Finishing Quiz</button></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 
 
       <section id="projects" class="tab">
@@ -175,11 +177,9 @@
       if (event && event.currentTarget) event.currentTarget.classList.add('active');
     }
 
-    function logout() {
-      alert("Logging out...");
-    }
+  
   </script>
 
-  <script src="/JS/student.js"></script>
+  <script src="JS/student.js"></script>
 </body>
 </html>

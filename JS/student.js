@@ -6,6 +6,9 @@ const units = [
 ];
 
 const tbody = document.getElementById('units-tbody');
+let quizAttempts = JSON.parse(localStorage.getItem("quizAttempts")) || {};
+
+
 
 function createLockIcon(locked) {
   return locked
@@ -46,9 +49,6 @@ function renderTable() {
 
 renderTable();
 
-function logout() {
-  alert('Logging out...');
-}
 
 const lessons = [
   { title: "Introduction to Woodworking", pdf: "../Lessons/Wood-Working.pdf" },
@@ -97,11 +97,20 @@ function renderQuizzes() {
 
   let html = `<h3>Quizzes</h3><div id="quiz-buttons"><ul>`;
   quizzes.forEach(q => {
-    html += `<li><button data-file="${q.file}">${q.title}</button></li>`;
+    const taken = quizAttempts[q.file];
+    const lessonsOpened = lessonStatus.every(status => status); // check lessons
+
+    html += `<li>
+      <button data-file="${q.file}" ${!lessonsOpened ? "disabled" : ""}>
+        ${q.title}
+      </button>
+      ${taken && lessonsOpened ? `<span class="quiz-score">Score: ${taken.score}/${taken.total} (${taken.percent}%)</span>` : ""}
+    </li>`;
   });
   html += `</ul></div>`;
   container.innerHTML = html;
 
+  // bind click events
   document.querySelectorAll('#quiz-buttons button').forEach(btn => {
     btn.addEventListener('click', () => {
       if (!lessonStatus.every(status => status)) {
@@ -112,6 +121,7 @@ function renderQuizzes() {
     });
   });
 }
+
 
 function updateQuizLocks() {
   const allOpened = lessonStatus.every(status => status);
@@ -128,6 +138,7 @@ function startQuiz(quizFile) {
       return res.json();
     })
     .then(quiz => {
+      quiz.file = quizFile; // important para matukoy kung aling quiz
       renderQuiz(quiz);
       showTab(null, 'courses');
     })
@@ -141,38 +152,155 @@ function renderQuiz(quiz) {
   const container = document.getElementById('quiz-container');
   if (!container) return;
 
-  let html = `<h3>${quiz.title}</h3><form id="quiz-form">`;
+  let html = `
+    <h3>${quiz.title}</h3>
+    <div id="quiz-progress">
+      <div id="quiz-progress-text">Question 1 of ${quiz.questions.length}</div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 0%;"></div>
+      </div>
+    </div>
+    <form id="quiz-form">
+  `;
+
   quiz.questions.forEach((q, index) => {
-    html += `<fieldset><legend>Q${index + 1}. ${q.q}</legend>`;
+    html += `<fieldset data-index="${index}" ${index > 0 ? 'style="display:none;"' : ''}>
+      <legend>Q${index + 1}. ${q.q}</legend>`;
     q.options.forEach(option => {
       html += `<label>
                  <input type="radio" name="question-${index}" value="${option}" required>
-                 ${option}
-               </label><br>`;
+                 <span>${option}</span>
+               </label>`;
     });
     html += `</fieldset>`;
   });
-  html += `<button type="submit">Submit Quiz</button></form>`;
-  html += `<div id="quiz-result" style="margin-top:20px; font-weight:bold;"></div>`;
+
+  html += `
+    <div class="quiz-navigation">
+      <button type="button" id="prev-btn" disabled>Previous</button>
+      <button type="button" id="next-btn">Next</button>
+      <button type="submit" id="submit-btn" style="display:none;">Submit Quiz</button>
+    </div>
+  </form>
+  <div id="quiz-result"></div>`;
+  
   container.innerHTML = html;
 
-  document.getElementById('quiz-form').addEventListener('submit', e => {
-    e.preventDefault();
+  setupQuizNavigation(quiz.questions.length);
+
+  const form = document.getElementById("quiz-form");
+  form.addEventListener("submit", e => {
+    e.preventDefault(); // para hindi mag reset
     evaluateQuiz(quiz);
-    renderQuizzes();
-    updateQuizLocks();
   });
+
 }
 
+function setupQuizNavigation(totalQuestions) {
+  let current = 0;
+  const fieldsets = document.querySelectorAll("#quiz-form fieldset");
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
+  const submitBtn = document.getElementById("submit-btn");
+  const progressText = document.getElementById("quiz-progress-text");
+  const progressFill = document.querySelector(".progress-fill");
+
+  function updateUI() {
+    fieldsets.forEach((fs, i) => {
+      fs.style.display = i === current ? "block" : "none";
+    });
+
+    prevBtn.disabled = current === 0;
+    nextBtn.style.display = current === totalQuestions - 1 ? "none" : "inline-block";
+    submitBtn.style.display = current === totalQuestions - 1 ? "inline-block" : "none";
+
+    // Disable next if no option selected
+    const selected = fieldsets[current].querySelector('input[type="radio"]:checked');
+    nextBtn.disabled = !selected;
+
+    progressText.textContent = `Question ${current + 1} of ${totalQuestions}`;
+    progressFill.style.width = `${((current + 1) / totalQuestions) * 100}%`;
+  }
+
+  prevBtn.addEventListener("click", () => {
+    if (current > 0) {
+      current--;
+      updateUI();
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (current < totalQuestions - 1) {
+      current++;
+      updateUI();
+    }
+  });
+
+  // Add listener to radio buttons to enable Next
+  fieldsets.forEach(fs => {
+    fs.querySelectorAll('input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        updateUI(); // enable Next when user selects
+      });
+    });
+  });
+
+  updateUI();
+}
+
+
+
 function evaluateQuiz(quiz) {
+
   let score = 0;
   quiz.questions.forEach((q, index) => {
     const selected = document.querySelector(`input[name="question-${index}"]:checked`);
-    if (selected && selected.value === q.answer) score++;
+    const correctAnswer = q.answer;
+
+    if (selected && selected.value === correctAnswer) {
+      score++;
+    }
+
+    // ipakita ang correct answer
+    const options = document.querySelectorAll(`input[name="question-${index}"]`);
+    options.forEach(opt => {
+      if (opt.value === correctAnswer) {
+        opt.parentElement.style.color = "green"; // highlight correct
+        opt.parentElement.style.fontWeight = "bold";
+      } else {
+        opt.parentElement.style.color = "red";
+      }
+      opt.disabled = true; // disable lahat ng options
+    });
   });
+
   const total = quiz.questions.length;
-  document.getElementById('quiz-result').textContent = `You scored ${score} out of ${total} (${Math.round((score / total) * 100)}%)`;
+  const percent = Math.round((score / total) * 100);
+
+  // Save attempt (lock quiz)
+ quizAttempts[quiz.file] = { score, total, percent };
+ localStorage.setItem("quizAttempts", JSON.stringify(quizAttempts));
+
+  // Show result message
+  // Show result message
+document.getElementById('quiz-result').textContent =
+  `You scored ${score} out of ${total} (${percent}%)`;
+
+// Disable quiz form inputs after submit
+const form = document.getElementById('quiz-form');
+if (form) {
+  form.querySelectorAll("input, button").forEach(el => el.disabled = true);
 }
+
+// Refresh quizzes list para lumabas score at ma-lock
+renderQuizzes();
+updateQuizLocks();
+
+}
+
+
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
   renderTable();
@@ -180,3 +308,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderQuizzes();
   updateQuizLocks();
 });
+
+
+function logout() {
+  window.location.href = 'Account.html';
+}

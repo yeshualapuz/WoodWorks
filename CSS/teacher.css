@@ -76,20 +76,20 @@ main.content header h1 {
   margin: 0;
   letter-spacing: 1px;
 }
-main.content header button.logout-btn {
-  background: #6e4e23;
+.logout-btn {
+  margin-top: 10px;
+  background-color:#5a3e1b;
   border: none;
-  color: #f5f0e6;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  padding: 12px;
+  border-radius: 8px;
+  color:#fffdfd;
+  font-weight: 700;
   cursor: pointer;
-  font-weight: 600;
   transition: background 0.3s ease;
+  font-size: 1rem;
 }
-main.content header button.logout-btn:hover,
-main.content header button.logout-btn:focus {
-  background: #5a3e1b;
-  outline: none;
+.logout-btn:hover {
+  background-color: #8d6e63;
 }
 
 /* Section styling */
