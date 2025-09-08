@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.getElementById("logout-btn").addEventListener("click", () => {
   signOut(auth).then(() => {
-    window.location.href = "account.html";
+    window.location.href = "index.html";
   }).catch((error) => {
     console.error("Logout error:", error);
   });

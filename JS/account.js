@@ -42,16 +42,16 @@ async function signup() {
 
     // Validate
     if (!validateEmail(email)) {
-        alert("Please enter a valid email address.");
+        showAlert("Please enter a valid email address.");
         return;
     }
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.isValid) {
-        alert(passwordValidation.message);
+        showAlert(passwordValidation.message);
         return;
     }
     if (password !== retypePassword) {
-        alert("Passwords do not match.");
+        showAlert("Passwords do not match.");
         return;
     }
 
@@ -67,10 +67,12 @@ async function signup() {
             createdAt: new Date()
         });
 
-        alert("Account created successfully as " + role);
-        window.location.href = "index.html";
+        showAlert("Account created successfully as " + role, () => {
+             window.location.href = "index.html";                      
+        });
+        
     } catch (error) {
-        alert("Signup failed: " + error.message);
+        showAlert("Signup failed: " + error.message);
         console.error(error);
     }
 }
@@ -84,3 +86,25 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+
+function showAlert(message, callback = null) {
+  document.getElementById("alertMessage").textContent = message;
+  document.getElementById("customAlert").style.display = "flex";
+
+  const okBtn = document.getElementById("alertOk");
+  const newOkBtn = okBtn.cloneNode(true);
+  okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+
+  newOkBtn.addEventListener("click", () => {
+    closeAlert();
+    if (callback) callback(); 
+  });
+
+  document.getElementById("alertClose").addEventListener("click", closeAlert);
+}
+
+function closeAlert() {
+  document.getElementById("customAlert").style.display = "none";
+}
+

@@ -129,7 +129,7 @@ body {
   gap: 8px;
 }
 
-.card .module-course {
+.card  {
   font-size: 0.9rem;
   color: var(--wood-medium);
 }
@@ -151,22 +151,6 @@ body {
   color: var(--wood-darker);
 }
 
-.filters {
-  background: var(--cream);
-  padding: 20px 25px;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(75,54,33,0.25);
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  color: var(--wood-darker);
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.filters label {
-  white-space: nowrap;
-}
 
 select {
   padding: 5px 10px;
@@ -318,7 +302,87 @@ tbody td.status {
 }
 
 
+/* ===== Units Table (Card + Rounded Look) ===== */
+.units-table {
+  width: 100%;
+  border-collapse: separate;   /* para gumana ang border-radius */
+  border-spacing: 0 12px;      /* space between rows */
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
+}
 
+/* Header */
+.units-table thead th {
+  background: transparent;
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: bold;
+  color: #4b3621;
+  font-size: 17px;
+}
+
+/* Table rows as cards */
+.units-table tbody tr {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.12);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.units-table tbody tr:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.18);
+}
+
+/* Table data cells */
+.units-table tbody td {
+  padding: 14px 18px;
+  border: none;
+}
+
+/* Rounded corners for first and last cell in row */
+.units-table tbody tr td:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.units-table tbody tr td:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Assessment text with lock icon aligned */
+.assessment {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+/* Lock icons */
+.lock-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Status pills */
+.status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+  color: #fff;
+}
+
+.status.in-progress {
+  background: #2e7d32; /* green */
+}
+
+.status.ready {
+  background: #9e9e9e; /* gray */
+}
 
 /* Quiz Container */
 #quiz-container {
@@ -502,3 +566,69 @@ tbody td.status {
   color: #1a73e8;
 }
 
+
+/* Overlay */
+.custom-alert {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Box */
+.custom-alert-content {
+  background: #fdfaf6; /* light neutral */
+  padding: 22px 30px;
+  border-radius: 14px;
+  text-align: center;
+  width: 340px;
+  position: relative;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  border: 2px solid #d2b48c; /* tan border */
+  animation: popIn 0.25s ease;
+  font-family: Arial, sans-serif;
+  color: #4b3621; /* dark brown text */
+}
+
+/* Animation */
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* Close button (X) */
+.close-btn {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #8b5e3c;
+  transition: 0.2s;
+}
+.close-btn:hover { color: #4b3621; }
+
+/* Message text */
+.custom-alert-content p {
+  margin: 10px 0 20px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* OK button */
+.custom-alert-content button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #8b5e3c; /* medium brown */
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.custom-alert-content button:hover {
+  background: #6f4428; /* darker brown */
+}

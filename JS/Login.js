@@ -31,13 +31,46 @@ function login() {
     const password = document.getElementById('password').value;
 
     if (!email || !validateEmail(email)) {
-        alert("Please enter a valid email address.");
+        showAlert("Please enter a valid email address.");
         return;
     }
     if (!password) {
-        alert("Please enter your password.");
+        showAlert("Please enter your password.");
         return;
     }
+
+function showAlert(message, callback = null) {
+  const alertBox = document.getElementById("customAlert");
+  const alertMessage = document.getElementById("alertMessage");
+  const okBtn = document.getElementById("alertOk");
+  const closeBtn = document.getElementById("alertClose");
+
+  alertMessage.textContent = message;
+  alertBox.style.display = "flex";
+
+  // clear old listeners
+  const newOkBtn = okBtn.cloneNode(true);
+  okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+
+  const newCloseBtn = closeBtn.cloneNode(true);
+  closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+
+  // OK button → close + callback
+  newOkBtn.addEventListener("click", () => {
+    closeAlert();
+    if (callback) callback();
+  });
+
+  // X button → close lang
+  newCloseBtn.addEventListener("click", closeAlert);
+}
+
+function closeAlert() {
+  document.getElementById("customAlert").style.display = "none";
+}
+
+
+
 
     // Firebase login
     signInWithEmailAndPassword(auth, email, password)
@@ -48,28 +81,30 @@ function login() {
             // 🔎 Get role from Firestore
             const ref = doc(db, "users", user.uid);
             const snapshot = await getDoc(ref);
+if (snapshot.exists()) {
+    const role = snapshot.data().role;
 
-            if (snapshot.exists()) {
-                const role = snapshot.data().role;
+    sessionStorage.setItem("userEmail", email);
+    sessionStorage.setItem("userRole", role);
 
-                alert(`Login successful! Welcome ${role}.`);
+    // Redirect based on real role from Firestore
+    if (role === "teacher") {
+        showAlert(`Login successful! Welcome ${role}.`, () => {
+            window.location.href = "teacher.html";
+        });
+    } else {
+        showAlert(`Login successful! Welcome ${role}.`, () => {
+            window.location.href = "students.html";
+        });
+    }
+} else {
+    showAlert("Error: No profile found for this account.");
+}
 
-                sessionStorage.setItem("userEmail", email);
-                sessionStorage.setItem("userRole", role);
-
-                // Redirect based on real role from Firestore
-                if (role === "teacher") {
-                    window.location.href = "teacher.html";
-                } else {
-                    window.location.href = "students.html";
-                }
-            } else {
-                alert("Error: No profile found for this account.");
-            }
         })
         .catch(error => {
             console.error("Login error:", error.message);
-            alert(`Error: ${error.message}`);
+            showAlert(`Error: ${error.message}`);
         });
 }
 

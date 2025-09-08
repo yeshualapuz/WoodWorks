@@ -193,3 +193,69 @@ body {
         font-size: 1.5rem;
     }
 }
+
+/* Overlay */
+.custom-alert {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Box */
+.custom-alert-content {
+  background: #fdfaf6; /* light neutral */
+  padding: 22px 30px;
+  border-radius: 14px;
+  text-align: center;
+  width: 340px;
+  position: relative;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  border: 2px solid #d2b48c; /* tan border */
+  animation: popIn 0.25s ease;
+  font-family: Arial, sans-serif;
+  color: #4b3621; /* dark brown text */
+}
+
+/* Animation */
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* Close button (X) */
+.close-btn {
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #8b5e3c;
+  transition: 0.2s;
+}
+.close-btn:hover { color: #4b3621; }
+
+/* Message text */
+.custom-alert-content p {
+  margin: 10px 0 20px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* OK button */
+.custom-alert-content button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #8b5e3c; /* medium brown */
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.custom-alert-content button:hover {
+  background: #6f4428; /* darker brown */
+}

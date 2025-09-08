@@ -17,9 +17,7 @@
       <h2>S.A.W Woodworking</h2>
       <nav>
         <a href="#" class="active" onclick="showTab(event, 'workshop')">My Workshop</a>
-        <a href="#" onclick="showTab(event, 'courses')">Woodworking Courses</a>
-        <a href="#" onclick="showTab(event, 'projects')">My Projects</a>
-        <a href="#" onclick="showTab(event, 'help')">Help</a>
+        <a href="#" onclick="showTab(event, 'courses')">Woodworking Lessons</a>
         <a href="#" onclick="showTab(event, 'contact')">Contact Us</a>
       </nav>
       <button class="logout-btn" id="logout-btn" onclick="logout()">Log Out</button>
@@ -83,43 +81,21 @@
           </div>
         </div>
 
-        <section class="filters">
-          <label for="class-select">Workshop</label>
-          <select id="class-select">
-            <option value="woodworking-101" selected>Woodworking 101</option>
-            <option value="wood-finishing">Wood Finishing</option>
-            <option value="joinery-basics">Joinery Basics</option>
-          </select>
+        
+<table class="units-table">
+  <thead>
+    <tr>
+      <th>Unit</th>
+      <th>Points</th>
+      <th>Correct</th>
+      <th>Answered</th>
+      <th>Assessments</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody id="units-tbody"></tbody>
+</table>
 
-          <label for="course-select">Course</label>
-          <select id="course-select">
-            <option value="wood-basics" selected>Wood Basics - Intro to Joinery</option>
-            <option value="advanced-woodworking">Advanced Woodworking</option>
-            <option value="woodworking-basics">Woodworking Basics</option>
-          </select>
-
-          <label for="module-select">Module</label>
-          <select id="module-select">
-            <option value="woodworking-101" selected>Woodworking 101</option>
-            <option value="sanding">Sanding</option>
-            <option value="joinery-playground">Joinery Playground</option>
-          </select>
-        </section>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Points (%)</th>
-              <th>Correct</th>
-              <th>Answered</th>
-              <th>Assessments</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="units-tbody">
-          </tbody>
-        </table>
       </section>
 
 <section id="courses" class="tab">
@@ -166,6 +142,17 @@
 
     </main>
   </div>
+
+<!-- 🔔 Custom Alert -->
+<div id="customAlert" class="custom-alert">
+  <div class="custom-alert-content">
+    <span class="close-btn" onclick="closeAlert()">&times;</span>
+    <p id="alertMessage">This is an alert message!</p>
+    <button onclick="closeAlert()">OK</button>
+  </div>
+</div>
+
+
 
   <script>
     function showTab(event, tabId) {

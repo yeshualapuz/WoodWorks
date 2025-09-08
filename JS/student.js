@@ -1,3 +1,13 @@
+function showAlert(message) {
+  document.getElementById("alertMessage").textContent = message;
+  document.getElementById("customAlert").style.display = "flex";
+}
+
+function closeAlert() {
+  document.getElementById("customAlert").style.display = "none";
+}
+
+
 const units = [
   { name: "Wood Basics", points: 20, correct: 1, answered: 1, assessments: 5, status: "in progress" },
   { name: "Wood Branching", points: null, correct: 0, answered: 0, assessments: 4, status: "ready to go" },
@@ -42,7 +52,7 @@ function renderTable() {
   document.querySelectorAll('.assessment.unlocked').forEach(elem => {
     elem.addEventListener('click', () => {
       const index = +elem.getAttribute('data-index');
-      alert(`Opening assessments for "${units[index].name}"`);
+      showAlert(`Opening assessments for "${units[index].name}"`);
     });
   });
 }
@@ -114,7 +124,7 @@ function renderQuizzes() {
   document.querySelectorAll('#quiz-buttons button').forEach(btn => {
     btn.addEventListener('click', () => {
       if (!lessonStatus.every(status => status)) {
-        alert("You must open all lessons before taking the quiz!");
+        showAlert("You must open all lessons before taking the quiz!");
         return;
       }
       startQuiz(btn.getAttribute('data-file'));
@@ -144,7 +154,7 @@ function startQuiz(quizFile) {
     })
     .catch(err => {
       console.error(err);
-      alert("Failed to load quiz.");
+      showAlert("Failed to load quiz.");
     });
 }
 
@@ -311,5 +321,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function logout() {
-  window.location.href = 'Account.html';
+  window.location.href = 'index.html';
 }
