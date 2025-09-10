@@ -116,14 +116,20 @@
     <div id="quiz-container">
       <ul>
         <li><button onclick="startQuiz('woodworking')">Wood Basics Quiz</button></li>
-        <li><button onclick="startQuiz('woodworking')">Joinery Quiz</button></li>
+        <li><button onclick="startQuiz('woodworking')">Joinery Quiz</button></li> 
         <li><button onclick="startQuiz('woodworking')">Finishing Quiz</button></li>
       </ul>
     </div>
   </div>
+
+  <div id="certificate-container" style="display:none; text-align:center; margin-top:30px;">
+  <h3>You earned your Certificate</h3>
+  <p>The certificate is ready to claim for you. You did an amazing job in the course and earned it.</p>
+  <canvas id="certificate-canvas" style="max-width:100%; border:1px solid #ccc;"></canvas><br>
+  <button id="download-certificate">Claim Certificate</button>
+</div>
+
 </section>
-
-
 
       <section id="projects" class="tab">
         <h2>My Projects</h2>

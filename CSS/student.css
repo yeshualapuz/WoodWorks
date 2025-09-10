@@ -632,3 +632,9 @@ tbody td.status {
 .custom-alert-content button:hover {
   background: #6f4428; /* darker brown */
 }
+
+#certificate-canvas {
+  width: 600px;   /* adjust preview width */
+  height: auto;   /* keeps aspect ratio */
+  border: 1px solid #ccc;
+}

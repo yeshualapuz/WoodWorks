@@ -292,7 +292,6 @@ function evaluateQuiz(quiz) {
  localStorage.setItem("quizAttempts", JSON.stringify(quizAttempts));
 
   // Show result message
-  // Show result message
 document.getElementById('quiz-result').textContent =
   `You scored ${score} out of ${total} (${percent}%)`;
 
@@ -305,6 +304,13 @@ if (form) {
 // Refresh quizzes list para lumabas score at ma-lock
 renderQuizzes();
 updateQuizLocks();
+
+
+const allDone = quizzes.every(q => quizAttempts[q.file]);
+if (allDone) {
+  showCertificate("Student Name"); // Replace with actual logged-in student’s name
+}
+
 
 }
 
@@ -322,4 +328,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function logout() {
   window.location.href = 'index.html';
+}
+
+function showCertificate(studentName) {
+  const container = document.getElementById("certificate-container");
+  const canvas = document.getElementById("certificate-canvas");
+  const ctx = canvas.getContext("2d");
+
+  const img = new Image();
+  img.src = "TemporaryCertificate.png"; // your certificate background image
+  img.onload = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    // Draw background
+    ctx.drawImage(img, 0, 0);
+
+    // Add student name (adjust coordinates & font to fit your design)
+    ctx.font = "48px Arial";
+    ctx.fillStyle = "black";
+    ctx.textAlign = "center";
+    ctx.fillText(studentName, canvas.width / 2, canvas.height / 2);
+
+    // Show container
+    container.style.display = "block";
+  };
+
+  // Download button
+  document.getElementById("download-certificate").onclick = () => {
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = "TemporaryCertificate.png";
+    link.click();
+  };
 }
