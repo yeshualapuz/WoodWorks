@@ -638,3 +638,11 @@ tbody td.status {
   height: auto;   /* keeps aspect ratio */
   border: 1px solid #ccc;
 }
+
+
+.display-name {
+  font-weight: 750;          /* same as what you had */
+  font-size: 20;          /* adjust as needed */
+  color: #5c492a;           /* dark neutral */
+  letter-spacing: 0.1px;
+}

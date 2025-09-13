@@ -35,10 +35,16 @@ function validatePassword(password) {
 
 // Signup handler
 async function signup() {
+    const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const retypePassword = document.getElementById('retype').value;
     const role = document.getElementById('role').value;
+
+     if (username.length < 3) {
+        showAlert("Username must be at least 3 characters long.");
+        return;
+    }
 
     // Validate
     if (!validateEmail(email)) {
@@ -62,10 +68,14 @@ async function signup() {
 
         // Save Firestore profile
         await setDoc(doc(db, "users", user.uid), {
+            username: username,
             email: user.email,
             role: role,
             createdAt: new Date()
         });
+
+        localStorage.setItem("username", username);
+        localStorage.setItem("role", role);
 
         showAlert("Account created successfully as " + role, () => {
              window.location.href = "index.html";                      

@@ -15,6 +15,16 @@ const units = [
   { name: "Joinery Playground (not a tutorial)", points: null, correct: 0, answered: 0, assessments: 0, status: "ready to go" }
 ];
 
+// Get username & role from localStorage
+const username = localStorage.getItem("username");
+const role = localStorage.getItem("role");
+
+// Redirect if no username (not logged in)
+if (!username) {
+  window.location.href = "index.html";
+}
+
+
 const tbody = document.getElementById('units-tbody');
 let quizAttempts = JSON.parse(localStorage.getItem("quizAttempts")) || {};
 
@@ -308,17 +318,14 @@ updateQuizLocks();
 
 const allDone = quizzes.every(q => quizAttempts[q.file]);
 if (allDone) {
-  showCertificate("Student Name"); // Replace with actual logged-in student’s name
+  showCertificate(username); // Replace with actual logged-in student’s name
 }
 
 
 }
-
-
-
-
 
 document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById("displayName").textContent = username;
   renderTable();
   renderLessons();
   renderQuizzes();

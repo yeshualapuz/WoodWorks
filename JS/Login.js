@@ -84,16 +84,22 @@ function closeAlert() {
 if (snapshot.exists()) {
     const role = snapshot.data().role;
 
+
+    const data = snapshot.data();
+    const username = data.username || ""; // ✅ username galing Firestore
+    // ✅ Save username and role
+    localStorage.setItem("username", username);
+    localStorage.setItem("role", role);
     sessionStorage.setItem("userEmail", email);
     sessionStorage.setItem("userRole", role);
 
     // Redirect based on real role from Firestore
     if (role === "teacher") {
-        showAlert(`Login successful! Welcome ${role}.`, () => {
+        showAlert(`Login successful! Welcome ${username || role}.`, () => {
             window.location.href = "teacher.html";
         });
     } else {
-        showAlert(`Login successful! Welcome ${role}.`, () => {
+        showAlert(`Login successful! Welcome ${username || role}.`, () => {
             window.location.href = "students.html";
         });
     }

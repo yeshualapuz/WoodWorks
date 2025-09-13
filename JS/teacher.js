@@ -169,15 +169,40 @@ if (mod.type === "quiz" && mod.link) {
   });
 }
 
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const db = getFirestore(app);
+
 document.addEventListener("DOMContentLoaded", () => {
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       renderCourses(fixedCourses);
+
+      // ✅ Fetch teacher username safely
+      try {
+        const ref = doc(db, "users", user.uid);
+        const snapshot = await getDoc(ref);
+
+        const teacherNameElem = document.getElementById("teacherName");
+        if (teacherNameElem) {
+          if (snapshot.exists()) {
+            const data = snapshot.data();
+            teacherNameElem.textContent = data.username || user.email; // <--- DITO GINAGAMIT YUNG USERNAME
+          } else {
+            teacherNameElem.textContent = user.email;
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching teacher data:", error);
+        const teacherNameElem = document.getElementById("teacherName");
+        if (teacherNameElem) teacherNameElem.textContent = user.email;
+      }
+
     } else {
       window.location.href = "account.html";
     }
   });
 });
+
 
 document.getElementById("logout-btn").addEventListener("click", () => {
   signOut(auth).then(() => {

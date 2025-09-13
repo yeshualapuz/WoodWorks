@@ -1,3 +1,10 @@
+.teacher-name {
+  font-weight: 700;
+  font-size: 13;
+  color: #5c4327;
+}
+
+
 /* Reset & base */
 * {
   box-sizing: border-box;
