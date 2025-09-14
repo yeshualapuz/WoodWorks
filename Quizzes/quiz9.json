@@ -1,0 +1,30 @@
+{
+  "title": "Lesson 9: Measuring and Marking Tools",
+  "questions": [
+    {
+      "q": "Which tool is BEST for drawing accurate right angles on wood?",
+      "options": ["Measuring Tape", "Try Square", "Ruler", "Marking Gauge"],
+      "answer": "Try Square"
+    },
+    {
+      "q": "A marking gauge is used to:",
+      "options": ["Cut wood to length", "Mark parallel lines to an edge", "Check surface flatness", "Measure large distances"],
+      "answer": "Mark parallel lines to an edge"
+    },
+    {
+      "q": "Why is a combination square considered versatile?",
+      "options": ["It is made of multiple materials", "It can measure 45° and 90° angles, and depth", "It has a built-in level only", "It is used only for metalwork"],
+      "answer": "It can measure 45° and 90° angles, and depth"
+    },
+    {
+      "q": "Which tool is MOST accurate for measuring thickness and small dimensions?",
+      "options": ["Measuring Tape", "Caliper", "Combination Square", "Ruler"],
+      "answer": "Caliper"
+    },
+    {
+      "q": "Chalk lines are primarily used to:",
+      "options": ["Check wood moisture", "Mark long, straight lines", "Sharpen marking tools", "Test wood strength"],
+      "answer": "Mark long, straight lines"
+    }
+  ]
+}

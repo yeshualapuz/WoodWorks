@@ -1,0 +1,30 @@
+{
+  "title": "Lesson 8: Wood Finishing",
+  "questions": [
+    {
+      "q": "What is the MAIN purpose of applying wood finish?",
+      "options": ["To make the wood heavier", "To protect and enhance the wood's appearance", "To make the wood waterproof permanently", "To glue pieces of wood together"],
+      "answer": "To protect and enhance the wood's appearance"
+    },
+    {
+      "q": "Which finish penetrates deeply into the wood fibers and enhances grain patterns?",
+      "options": ["Paint", "Stain", "Varnish", "Shellac"],
+      "answer": "Stain"
+    },
+    {
+      "q": "Why is sanding between coats of finish important?",
+      "options": ["It removes all previous finish layers", "It creates a rough surface for the next coat to bond", "It darkens the wood color", "It prevents the finish from drying too fast"],
+      "answer": "It creates a rough surface for the next coat to bond"
+    },
+    {
+      "q": "Which of these is considered a clear protective finish for wood?",
+      "options": ["Stain", "Paint", "Varnish", "Wax"],
+      "answer": "Varnish"
+    },
+    {
+      "q": "What is the first step before applying any wood finish?",
+      "options": ["Apply a thick coat of varnish immediately", "Clean and sand the surface", "Wet the wood with water", "Drill holes for airflow"],
+      "answer": "Clean and sand the surface"
+    }
+  ]
+}

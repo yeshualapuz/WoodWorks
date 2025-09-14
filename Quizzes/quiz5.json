@@ -1,0 +1,30 @@
+{
+  "title": "Lesson 5: Understanding Chisels",
+  "questions": [
+    {
+      "q": "Which type of chisel is BEST for delicate work and should NOT be struck with a mallet?",
+      "options": ["Bevel-Edged Chisel", "Paring Chisel", "Mortise Chisel", "Skewed Chisel"],
+      "answer": "Paring Chisel"
+    },
+    {
+      "q": "What should you ALWAYS do to reduce the risk of accidents when using chisels?",
+      "options": ["Use them with metal hammers", "Keep them dull to prevent deep cuts", "Keep chisels sharp", "Cut toward your body for control"],
+      "answer": "Keep chisels sharp"
+    },
+    {
+      "q": "Which chisel is specifically designed to cut deep mortises and withstand mallet blows?",
+      "options": ["Paring Chisel", "Skewed Chisel", "Mortise Chisel", "Japanese Chisel (Nomi)"],
+      "answer": "Mortise Chisel"
+    },
+    {
+      "q": "What is the purpose of applying oil to chisels after cleaning?",
+      "options": ["To make the handle stronger", "To prevent rust and corrosion", "To sharpen the blade edge", "To reduce friction when cutting"],
+      "answer": "To prevent rust and corrosion"
+    },
+    {
+      "q": "The sloped surface ground to form the cutting edge of a chisel is called the:",
+      "options": ["Tang", "Mortise", "Bevel", "Nomi"],
+      "answer": "Bevel"
+    }
+  ]
+}

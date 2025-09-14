@@ -1,0 +1,30 @@
+{
+  "title": "Lesson 6: Wood Joints",
+  "questions": [
+    {
+      "q": "Which of the following is the simplest wood joint, usually just two pieces butted together and fastened?",
+      "options": ["Lap Joint", "Butt Joint", "Dado Joint", "Mortise and Tenon Joint"],
+      "answer": "Butt Joint"
+    },
+    {
+      "q": "What is the main advantage of a dovetail joint?",
+      "options": ["It's the easiest to cut by hand", "It's invisible when glued", "It is very strong and resists pulling apart", "It uses no adhesive"],
+      "answer": "It is very strong and resists pulling apart"
+    },
+    {
+      "q": "Which joint involves cutting a slot (groove) into one piece of wood so that another piece can fit into it?",
+      "options": ["Dado Joint", "Lap Joint", "Miter Joint", "Butt Joint"],
+      "answer": "Dado Joint"
+    },
+    {
+      "q": "A Mortise and Tenon joint is commonly used for:",
+      "options": ["Decorative edge trimming", "Strong frame construction", "Temporary joints", "Carving designs on furniture"],
+      "answer": "Strong frame construction"
+    },
+    {
+      "q": "Which joint is made by overlapping two boards halfway and fastening them together?",
+      "options": ["Dado Joint", "Lap Joint", "Miter Joint", "Biscuit Joint"],
+      "answer": "Lap Joint"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "title": "Lesson 4: Types of Planes",
+  "questions": [
+    {
+      "q": "What is the MAIN purpose of using a hand plane in woodworking?",
+      "options": ["To drill holes in wood", "To flatten and smooth wood surfaces", "To fasten wood pieces together", "To measure wood thickness"],
+      "answer": "To flatten and smooth wood surfaces"
+    },
+    {
+      "q": "Which type of plane is BEST for trimming joints like tenons to a perfect fit?",
+      "options": ["Block Plane", "Shoulder Plane", "Scraper Plane", "Spokeshave"],
+      "answer": "Shoulder Plane"
+    },
+    {
+      "q": "A plow plane (or plough plane) is commonly used to:",
+      "options": ["Create curved surfaces", "Cut grooves for joinery work", "Smooth large boards", "Trim decorative edges"],
+      "answer": "Cut grooves for joinery work"
+    },
+    {
+      "q": "Why is it important to sharpen plane blades regularly?",
+      "options": ["To make the plane heavier", "To prevent the blade from rusting", "To prolong blade life and avoid accidents", "To make the plane cut deeper"],
+      "answer": "To prolong blade life and avoid accidents"
+    },
+    {
+      "q": "Which plane is MOST suitable for shaping and smoothing curved surfaces?",
+      "options": ["Bench Plane", "Rebate Plane", "Spokeshave", "Router Plane"],
+      "answer": "Spokeshave"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "title": "Lesson 10: Wood Defects",
+  "questions": [
+    {
+      "q": "Which wood defect is caused by fungi, resulting in discoloration and decay?",
+      "options": ["Warping", "Knots", "Splits", "Rot"],
+      "answer": "Rot"
+    },
+    {
+      "q": "Knots in wood are formed due to:",
+      "options": ["Excess moisture", "Tree branches growing from the trunk", "Improper seasoning", "Fungal infection"],
+      "answer": "Tree branches growing from the trunk"
+    },
+    {
+      "q": "What does 'warping' refer to in wood defects?",
+      "options": ["Surface cracks forming due to dryness", "Twisting or bending out of shape", "Color change due to fungus", "Weakening of grain structure"],
+      "answer": "Twisting or bending out of shape"
+    },
+    {
+      "q": "What is the primary cause of wood shrinkage?",
+      "options": ["Lack of sunlight", "Excessive moisture loss during drying", "Exposure to insects", "Improper cutting"],
+      "answer": "Excessive moisture loss during drying"
+    },
+    {
+      "q": "A split or crack that runs along the grain of the wood is called a:",
+      "options": ["Check", "Split", "Shake", "Pitch Pocket"],
+      "answer": "Shake"
+    }
+  ]
+}

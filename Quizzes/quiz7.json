@@ -1,0 +1,30 @@
+{
+  "title": "Lesson 7: Fasteners",
+  "questions": [
+    {
+      "q": "Which fastener is designed to be easily removed and re-used without damaging the wood?",
+      "options": ["Nail", "Wood Screw", "Dowel", "Staple"],
+      "answer": "Wood Screw"
+    },
+    {
+      "q": "Why are finishing nails often used in fine woodworking?",
+      "options": ["They have large heads for better grip", "They are cheaper than screws", "They have small heads and can be hidden easily", "They require no hammering"],
+      "answer": "They have small heads and can be hidden easily"
+    },
+    {
+      "q": "Which fastener is cylindrical and is glued into drilled holes to join two pieces of wood?",
+      "options": ["Dowel", "Bolt", "Staple", "Lag Screw"],
+      "answer": "Dowel"
+    },
+    {
+      "q": "What type of nail is BEST for framing and heavy structural work?",
+      "options": ["Box Nail", "Finishing Nail", "Common Nail", "Brad Nail"],
+      "answer": "Common Nail"
+    },
+    {
+      "q": "Which fastener uses two-part systems (bolt + nut) for extra strength?",
+      "options": ["Nail", "Screw", "Dowel", "Bolt"],
+      "answer": "Bolt"
+    }
+  ]
+}

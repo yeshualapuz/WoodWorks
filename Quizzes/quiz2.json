@@ -1,0 +1,30 @@
+{
+  "title": "Lesson 2: Tools and Safety in the Woodworking Shop",
+  "questions": [
+    {
+      "q": "Which of the following is the MAIN cause of most accidents in the woodshop?",
+      "options": ["Dull tools", "Not paying attention", "Improper clothing", "Using the wrong material"],
+      "answer": "Not paying attention"
+    },
+    {
+      "q": "When using a chisel, which of the following is the safest practice?",
+      "options": ["Strike the chisel with a hammer instead of a mallet", "Always push the blade toward your body", "Secure the wood with a clamp or vise", "Hold the wood with your non-dominant hand"],
+      "answer": "Secure the wood with a clamp or vise"
+    },
+    {
+      "q": "What should you ALWAYS wear when operating power tools?",
+      "options": ["Gloves", "Ear protection", "Eye protection", "Dust mask"],
+      "answer": "Eye protection"
+    },
+    {
+      "q": "The “12/3 Rule” in the woodshop refers to:",
+      "options": ["Cutting only wood 12 inches wide and 3 inches thick", "Cutting only wood 12 inches long and 3 inches wide", "Using machines only for 12 minutes with a 3-minute break", "A 12-step, 3-rule safety guideline"],
+      "answer": "Cutting only wood 12 inches long and 3 inches wide"
+    },
+    {
+      "q": "Why are SHARP tools considered safer than dull tools?",
+      "options": ["Sharp tools are heavier and easier to control", "They require less pressure and are easier to control", "They cut slower and give more reaction time", "They prevent wood from splintering"],
+      "answer": "They require less pressure and are easier to control"
+    }
+  ]
+}

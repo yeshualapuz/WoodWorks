@@ -1,0 +1,30 @@
+{
+  "title": "Lesson 1: Classification of Trees and Wood",
+  "questions": [
+    {
+      "q": "Which classification of trees do hardwoods come from?",
+      "options": ["Gymnosperms", "Angiosperms", "Conifers", "Resinous trees"],
+      "answer": "Angiosperms"
+    },
+    {
+      "q": "Which of the following is a common feature of softwood?",
+      "options": ["Slower growing (20+ years)", "Denser and more durable", "Fast growing (1–3 years)", "Produces fruit and flowers"],
+      "answer": "Fast growing (1–3 years)"
+    },
+    {
+      "q": "Plywood is a manufactured wood known for its:",
+      "options": ["Naked seeds and cone production", "Thin layers bonded with adhesive under pressure", "Ability to shed leaves every year", "Natural resistance to insects"],
+      "answer": "Thin layers bonded with adhesive under pressure"
+    },
+    {
+      "q": "Which manufactured wood is made from wood chips, sawmill shavings, and resin binders?",
+      "options": ["Plywood", "MDF (Medium-Density Fiberboard)", "Hardboard", "Particle Board (Chipboard)"],
+      "answer": "Particle Board (Chipboard)"
+    },
+    {
+      "q": "What is the function of cladding in construction?",
+      "options": ["Provides support as a structural framework", "Serves as a walking surface or platform", "Strengthens the structure by attaching to framing", "Protects the exterior from weather and improves appearance"],
+      "answer": "Protects the exterior from weather and improves appearance"
+    }
+  ]
+}

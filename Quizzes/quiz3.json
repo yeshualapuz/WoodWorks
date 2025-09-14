@@ -1,0 +1,30 @@
+{
+  "title": "Lesson 3: Saws and Planes",
+  "questions": [
+    {
+      "q": "What makes Japanese saws (“nokogiri”) different from most Western saws?",
+      "options": ["They cut on the push stroke", "They cut on the pull stroke", "They are powered by electricity", "They are mainly used for metal"],
+      "answer": "They cut on the pull stroke"
+    },
+    {
+      "q": "Which type of saw is best for making intricate shapes and detailed cuts?",
+      "options": ["Panel Saw", "Coping Saw", "Circular Saw", "Band Saw"],
+      "answer": "Coping Saw"
+    },
+    {
+      "q": "Which power saw is most suitable for cutting curves in wood and metal sheets?",
+      "options": ["Circular Saw", "Jigsaw", "Table Saw", "Back Saw"],
+      "answer": "Jigsaw"
+    },
+    {
+      "q": "What is the main purpose of a Bench Plane?",
+      "options": ["Cutting curves in wood", "Flattening and smoothing surfaces before finishing", "Trimming doors to fit", "Making deep grooves in wood"],
+      "answer": "Flattening and smoothing surfaces before finishing"
+    },
+    {
+      "q": "Which of the following is an example of a specialized hand plane?",
+      "options": ["Panel Saw", "Circular Saw", "Router Plane", "Block Plane"],
+      "answer": "Router Plane"
+    }
+  ]
+}
