@@ -15,14 +15,6 @@ const units = [
   { name: "Joinery Playground (not a tutorial)", points: null, correct: 0, answered: 0, assessments: 0, status: "ready to go" }
 ];
 
-// Get username & role from localStorage
-const username = localStorage.getItem("username");
-const role = localStorage.getItem("role");
-
-// Redirect if no username (not logged in)
-if (!username) {
-  window.location.href = "index.html";
-}
 
 
 const tbody = document.getElementById('units-tbody');
@@ -70,12 +62,26 @@ function renderTable() {
 renderTable();
 
 
+
 const lessons = [
-  { title: "Introduction to Woodworking", pdf: "../Lessons/Wood-Working.pdf" },
-  //{ title: "Wood Types and Properties", pdf: "../Lessons/Wood-Working.pdf" },
-  //{ title: "Basic Joinery Techniques", pdf: "../Lessons/Wood-Working.pdf" },
-  //{ title: "Sanding and Finishing", pdf: "../Lessons/Wood-Working.pdf" }
+  { title: "Lesson 1: Understanding wood types for your crafts", file: "../Lessons/Lesson-1.pdf", opened: false },
+  { title: "Lesson 2: Tools and Safety in the Wood Working shop", file: "../Lessons/Lesson-2.pdf", opened: false },
+  { title: "Lesson 3: Saws Used in Woodworking", file: "../Lessons/Lesson-3.pdf", opened: false },
+  { title: "Lesson 4: Types Of Planes", file: "../Lessons/Lesson-4.pdf", opened: false },
+  { title: "Lesson 5: Understanding Chisels in Woodworking", file: "../Lessons/Lesson-5.pdf", opened: false },
+  { title: "Lesson 6: Measuring and Marking Tools", file: "../Lessons/Lesson-6.pdf", opened: false },
+  { title: "Lesson 7: Squares and Directional Tools", file: "../Lessons/Lesson-7.pdf", opened: false },
+  { title: "Lesson 8: ------------------", file: "../Lessons/Lesson-8.pdf", opened: false },
+  { title: "Lesson 9: Wood Preparation for Wood Joinery", file: "../Lessons/Lesson-9.pdf", opened: false },
+  { title: "Lesson 10: Wood Joinery for Construction", file: "../Lessons/Lesson-10.pdf", opened: false }
+  
 ];
+
+const quizzes = lessons.map((lesson, index) => ({
+  title: `Quiz ${index + 1}`,
+  file: `quiz${index + 1}`,
+  unlocked: false
+}));
 
 const lessonStatus = lessons.map(() => false);
 
@@ -83,33 +89,36 @@ function renderLessons() {
   const lessonsList = document.querySelector('.lessons-list');
   if (!lessonsList) return;
 
-  let html = `<h3>Lessons</h3><ul>`;
+  let html = `<h3>LECTURES</h3><ul>`;
   lessons.forEach((lesson, index) => {
     html += `<li>
       ${lesson.title} 
-      <a href="${lesson.pdf}" target="_blank" rel="noopener" data-index="${index}" class="lesson-link">[View PDF]</a>
-      <span id="lesson-status-${index}" style="margin-left:10px;color:gray;">Not opened</span>
+      <a href="./Lessons/${lesson.file}" target="_blank" rel="noopener" data-index="${index}" class="lesson-link">[Open Lesson]</a>
+      <span id="lesson-status-${index}" style="margin-left:10px;color:${lesson.opened ? 'green' : 'gray'};">
     </li>`;
   });
+
+
   html += `</ul>`;
   lessonsList.innerHTML = html;
 
   document.querySelectorAll('.lesson-link').forEach(link => {
     link.addEventListener('click', e => {
       const index = +e.currentTarget.getAttribute('data-index');
-      lessonStatus[index] = true;
+      lessons[index].opened = true;
+      localStorage.setItem("lessonsProgress", JSON.stringify(lessons));
+
       document.getElementById(`lesson-status-${index}`).textContent = "Opened";
       document.getElementById(`lesson-status-${index}`).style.color = "green";
-      updateQuizLocks();
+
+      quizzes[index].unlocked = true;
+      localStorage.setItem("quizzesProgress", JSON.stringify(quizzes));
+
+      renderQuizzes();
     });
   });
 }
 
-const quizzes = [
-  { title: "Wood Basics Quiz", file: "woodworking" },
-  { title: "Joinery Quiz", file: "woodworking" },
-  { title: "Finishing Quiz", file: "woodworking" }
-];
 
 function renderQuizzes() {
   const container = document.getElementById('quiz-container');
@@ -318,15 +327,17 @@ updateQuizLocks();
 
 const allDone = quizzes.every(q => quizAttempts[q.file]);
 if (allDone) {
-  showCertificate(username); // Replace with actual logged-in student’s name
+  const firstName = localStorage.getItem("firstName") || "";
+  const lastName = localStorage.getItem("lastName") || "";
+  showCertificate(`${firstName} ${lastName}`);
 }
-
 
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById("displayName").textContent = username;
-  renderTable();
+  const firstName = localStorage.getItem("firstName") || "";
+  const lastName = localStorage.getItem("lastName") || "";
+  document.getElementById("displayName").textContent = `${firstName} ${lastName}`;  renderTable();
   renderLessons();
   renderQuizzes();
   updateQuizLocks();

@@ -186,7 +186,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (teacherNameElem) {
           if (snapshot.exists()) {
             const data = snapshot.data();
-            teacherNameElem.textContent = data.username || user.email; // <--- DITO GINAGAMIT YUNG USERNAME
+            const fullName = [data.firstName, data.lastName].filter(Boolean).join(" ");
+            teacherNameElem.textContent = fullName || user.email;
           } else {
             teacherNameElem.textContent = user.email;
           }
