@@ -28,10 +28,13 @@ function createLockIcon(locked) {
     : `<svg class="lock-icon unlocked" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm6-7h-8v-3a4 4 0 0 1 8 0v3zm-2 0v-3a2 2 0 0 0-4 0v3H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-2z"/></svg>`;
 }
 
+
 function renderTable() {
+  // Exit immediately if the table doesn't exist
+  if (!tbody) return;
+
   tbody.innerHTML = '';
-  for (let i = 0; i < units.length; i++) {
-    const unit = units[i];
+  units.forEach((unit, i) => {
     const prevUnitCompleted = i === 0 || units[i - 1].correct > 0;
     const isUnlocked = prevUnitCompleted;
 
@@ -49,7 +52,7 @@ function renderTable() {
       <td class="status ${unit.correct > 0 ? 'in-progress' : 'ready'}">${unit.correct > 0 ? 'in progress' : 'ready to go'}</td>
     `;
     tbody.appendChild(tr);
-  }
+  });
 
   document.querySelectorAll('.assessment.unlocked').forEach(elem => {
     elem.addEventListener('click', () => {
@@ -58,6 +61,12 @@ function renderTable() {
     });
   });
 }
+
+// If you were calling renderTable() on page load
+document.addEventListener('DOMContentLoaded', () => {
+  renderTable(); // this is now safe
+});
+
 
 renderTable();
 
@@ -93,31 +102,42 @@ function renderLessons() {
   lessons.forEach((lesson, index) => {
     html += `<li>
       ${lesson.title} 
-      <a href="./Lessons/${lesson.file}" target="_blank" rel="noopener" data-index="${index}" class="lesson-link">[Open Lesson]</a>
+      <a href="${lesson.file}" target="_blank" rel="noopener" data-index="${index}" class="lesson-link">[Open Lesson]</a>
       <span id="lesson-status-${index}" style="margin-left:10px;color:${lesson.opened ? 'green' : 'gray'};">
+        ${lesson.opened ? "Opened" : ""}
+      </span>
     </li>`;
   });
-
-
   html += `</ul>`;
+
   lessonsList.innerHTML = html;
 
+  // Add click listeners
   document.querySelectorAll('.lesson-link').forEach(link => {
     link.addEventListener('click', e => {
       const index = +e.currentTarget.getAttribute('data-index');
+
+      // Mark lesson as opened
       lessons[index].opened = true;
+      lessonStatus[index] = true;
       localStorage.setItem("lessonsProgress", JSON.stringify(lessons));
 
-      document.getElementById(`lesson-status-${index}`).textContent = "Opened";
-      document.getElementById(`lesson-status-${index}`).style.color = "green";
+      // Update lesson status visually
+      const statusSpan = document.getElementById(`lesson-status-${index}`);
+      statusSpan.textContent = "Opened";
+      statusSpan.style.color = "green";
 
+      // Unlock the corresponding quiz
       quizzes[index].unlocked = true;
       localStorage.setItem("quizzesProgress", JSON.stringify(quizzes));
 
+      // Re-render quizzes to reflect unlock
       renderQuizzes();
+      updateQuizLocks();
     });
   });
 }
+
 
 
 function renderQuizzes() {
@@ -125,25 +145,24 @@ function renderQuizzes() {
   if (!container) return;
 
   let html = `<h3>Quizzes</h3><div id="quiz-buttons"><ul>`;
-  quizzes.forEach(q => {
-    const taken = quizAttempts[q.file];
-    const lessonsOpened = lessonStatus.every(status => status); // check lessons
-
+  quizzes.forEach((quiz, index) => {
+    const attempt = quizAttempts[quiz.file];
     html += `<li>
-      <button data-file="${q.file}" ${!lessonsOpened ? "disabled" : ""}>
-        ${q.title}
+      <button data-file="${quiz.file}" ${!quiz.unlocked ? "disabled" : ""}>
+        ${quiz.title}
       </button>
-      ${taken && lessonsOpened ? `<span class="quiz-score">Score: ${taken.score}/${taken.total} (${taken.percent}%)</span>` : ""}
+      ${attempt ? `<span class="quiz-score">Score: ${attempt.score}/${attempt.total} (${attempt.percent}%)</span>` : ""}
     </li>`;
   });
   html += `</ul></div>`;
+
   container.innerHTML = html;
 
-  // bind click events
-  document.querySelectorAll('#quiz-buttons button').forEach(btn => {
+  // Add click events
+  document.querySelectorAll('#quiz-buttons button').forEach((btn, index) => {
     btn.addEventListener('click', () => {
-      if (!lessonStatus.every(status => status)) {
-        showAlert("You must open all lessons before taking the quiz!");
+      if (!quizzes[index].unlocked) {
+        showAlert("This quiz is locked. Open the corresponding lesson first.");
         return;
       }
       startQuiz(btn.getAttribute('data-file'));
@@ -151,14 +170,14 @@ function renderQuizzes() {
   });
 }
 
-
 function updateQuizLocks() {
-  const allOpened = lessonStatus.every(status => status);
-  document.querySelectorAll('#quiz-buttons button').forEach(btn => {
-    btn.disabled = !allOpened;
-    btn.style.opacity = allOpened ? 1 : 0.5;
+  document.querySelectorAll('#quiz-buttons button').forEach((btn, index) => {
+    const quiz = quizzes[index];
+    btn.disabled = !quiz.unlocked;
+    btn.style.opacity = quiz.unlocked ? 1 : 0.5;
   });
 }
+
 
 function startQuiz(quizFile) {
   fetch(`../Quizzes/${quizFile}.json`)
@@ -380,3 +399,63 @@ function showCertificate(studentName) {
     link.click();
   };
 }
+
+function renderTaskTable() {
+  const tbody = document.getElementById("task-tbody");
+  if (!tbody) return;
+
+  // Load lesson progress from localStorage
+  const storedLessons = JSON.parse(localStorage.getItem("lessonsProgress")) || lessons;
+  const storedQuizzes = JSON.parse(localStorage.getItem("quizzesProgress")) || quizzes;
+  const attempts = JSON.parse(localStorage.getItem("quizAttempts")) || {};
+
+  tbody.innerHTML = "";
+
+  // Add Pre-Test (static example)
+  const preTestRow = document.createElement("tr");
+  preTestRow.innerHTML = `<td>Pre Test</td><td>${attempts["pre-test"] ? "Completed" : "Pending"}</td>`;
+  tbody.appendChild(preTestRow);
+
+  // Add lessons
+  storedLessons.forEach((lesson, index) => {
+    const status = lesson.opened ? "Completed" : (index === 0 || storedLessons[index - 1].opened ? "Unlocked" : "Locked");
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>Lesson ${index + 1}</td><td>${status}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // Add quizzes
+  storedQuizzes.forEach((quiz, index) => {
+    const attempt = attempts[quiz.file];
+    const status = attempt ? `Completed (${attempt.percent}%)` : (quiz.unlocked ? "Unlocked" : "Locked");
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>Quiz ${index + 1}</td><td>${status}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// Call it on page load
+document.addEventListener("DOMContentLoaded", () => {
+  renderTaskTable();
+});
+
+document.getElementById('submit-comment').addEventListener('click', () => {
+  const commentBox = document.getElementById('student-comment');
+  const feedback = document.getElementById('comment-feedback');
+  const comment = commentBox.value.trim();
+
+  if (!comment) {
+    feedback.style.color = 'red';
+    feedback.textContent = "Please write a comment before submitting.";
+    return;
+  }
+
+  // Save comment to localStorage (optional, persists across reloads)
+  let comments = JSON.parse(localStorage.getItem('teacherComments')) || [];
+  comments.push({ text: comment, date: new Date().toISOString() });
+  localStorage.setItem('teacherComments', JSON.stringify(comments));
+
+  feedback.style.color = 'green';
+  feedback.textContent = "Comment submitted!";
+  commentBox.value = "";
+});

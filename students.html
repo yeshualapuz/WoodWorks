@@ -18,147 +18,106 @@
       <nav>
         <a href="#" class="active" onclick="showTab(event, 'workshop')">My Workshop</a>
         <a href="#" onclick="showTab(event, 'courses')">Woodworking Lessons</a>
-        <!-- <a href="#" onclick="showTab(event, 'contact')">Contact Us</a> -->
       </nav>
       <button class="logout-btn" id="logout-btn" onclick="logout()">Log Out</button>
-
-
     </aside>
 
     <main class="main">
       <section id="workshop" class="tab active">
         <div class="welcome">
-          Hey <span id="displayName" class="display-name">(Student)</span>, you were last working on
+          <span id="displayName" class="display-name">(Student)</span>, you were last working on
         </div>
 
-        <div class="cards">
-          <div class="card">
-            <div class="title">
-              <img src="https://img.icons8.com/ios-filled/24/8B5E3C/code-file.png" alt="icon" />
-              Wood Basics
-            </div>
-            <div class="module-course">
-              Module <strong>Woodworking 101</strong><br />
-              Course <strong>Wood Basics - Intro to Joinery</strong>
-            </div>
-            <div class="stats">
-              <div class="stat"><div class="number">1</div>Correct</div>
-              <div class="stat"><div class="number">1</div>Answered</div>
-              <div class="stat"><div class="number">5</div>Assessments</div>
-            </div>
-          </div>
+    <h3>Task Progress</h3>
+    <table class="task-table" border="1">
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="task-tbody">
+      </tbody>
+    </table>
 
-          <div class="card">
-            <div class="title">
-              <img src="https://img.icons8.com/ios-filled/24/8B5E3C/synchronize.png" alt="icon" />
-              Sanding Techniques
-            </div>
-            <div class="module-course">
-              Module <strong>Finishing</strong><br />
-              Course <strong>Advanced Woodworking</strong>
-            </div>
-            <div class="stats">
-              <div class="stat"><div class="number">0</div>Correct</div>
-              <div class="stat"><div class="number">0</div>Answered</div>
-              <div class="stat"><div class="number">8</div>Assessments</div>
-            </div>
-          </div>
+    </section>
 
-          <div class="card">
-            <div class="title">
-              <img src="https://img.icons8.com/ios-filled/24/8B5E3C/js.png" alt="icon" />
-              Wood Joinery
-            </div>
-            <div class="module-course">
-              Module <strong>Joinery</strong><br />
-              Course <strong>Woodworking Basics</strong>
-            </div>
-            <div class="stats">
-              <div class="stat"><div class="number">0</div>Correct</div>
-              <div class="stat"><div class="number">1</div>Answered</div>
-              <div class="stat"><div class="number">8</div>Assessments</div>
-            </div>
-          </div>
-        </div>
+        <div id="teacher-announcement" style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
+  <h3>Teacher Announcement</h3>
+  <p><strong>Name:</strong> <span id="teacher-name">Mr. Smith</span></p>
+  <p><strong>Date:</strong> <span id="announcement-date">2025-09-16</span></p>
+  <p><strong>Note:</strong> <span id="announcement-note">Don't forget to submit Quiz 1 by Friday!</span></p>
 
-        
-<table class="units-table">
-  <thead>
-    <tr>
-      <th>Unit</th>
-      <th>Points</th>
-      <th>Correct</th>
-      <th>Answered</th>
-      <th>Assessments</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody id="units-tbody"></tbody>
-</table>
-
-      </section>
-
-<section id="courses" class="tab">
-  <h2>Woodworking Courses</h2>
-
-  <div class="lessons-list">
-    <h3>Lessons</h3>
-    <ul>
-      <li>Introduction to Woodworking</li>
-      <li>Wood Types and Properties</li>
-      <li>Basic Joinery Techniques</li>
-      <li>Sanding and Finishing</li>
-    </ul>
+  <div style="margin-top: 15px;">
+    <label for="student-comment"><strong>Your Comment:</strong></label><br>
+    <textarea id="student-comment" rows="4" style="width: 100%;" placeholder="Write your comment..."></textarea><br>
+    <button id="submit-comment" style="margin-top: 5px;">Submit Comment</button>
   </div>
 
-  <div class="quizzes-list" style="margin-top: 20px;">
-    <h3>Quizzes</h3>
-    <div id="quiz-container">
+  <div id="comment-feedback" style="color: green; margin-top: 10px;"></div>
+</div>
+
+  <section id="courses" class="tab">
+    <h2>Woodworking Courses</h2>
+
+    <div class="lessons-list">
+      <h3>Lessons</h3>
       <ul>
-        <li><button onclick="startQuiz('woodworking')">Wood Basics Quiz</button></li>
-        <li><button onclick="startQuiz('woodworking')">Joinery Quiz</button></li> 
-        <li><button onclick="startQuiz('woodworking')">Finishing Quiz</button></li>
+        <li>Introduction to Woodworking</li>
+        <li>Wood Types and Properties</li>
+        <li>Basic Joinery Techniques</li>
+        <li>Sanding and Finishing</li>
       </ul>
+    </div>
+
+    <div class="quizzes-list" style="margin-top: 20px;">
+      <h3>Quizzes</h3>
+      <div id="quiz-container">
+        <ul>
+          <li><button onclick="startQuiz('woodworking')">Wood Basics Quiz</button></li>
+          <li><button onclick="startQuiz('woodworking')">Joinery Quiz</button></li> 
+          <li><button onclick="startQuiz('woodworking')">Finishing Quiz</button></li>
+        </ul>
+      </div>
+    </div>
+
+
+    <div id="certificate-container" style="display:none; text-align:center; margin-top:30px;">
+    <h3>You earned your Certificate</h3>
+    <p>The certificate is ready to claim for you. You did an amazing job in the course and earned it.</p>
+    <canvas id="certificate-canvas" style="max-width:100%; border:1px solid #ccc;"></canvas><br>
+    <button id="download-certificate">Claim Certificate</button>
+  </div>
+  </main>
+  </div>
+
+  <div id="customAlert" class="custom-alert">
+    <div class="custom-alert-content">
+      <span class="close-btn" onclick="closeAlert()">&times;</span>
+      <p id="alertMessage">This is an alert message!</p>
+      <button onclick="closeAlert()">OK</button>
     </div>
   </div>
 
-  <div id="certificate-container" style="display:none; text-align:center; margin-top:30px;">
-  <h3>You earned your Certificate</h3>
-  <p>The certificate is ready to claim for you. You did an amazing job in the course and earned it.</p>
-  <canvas id="certificate-canvas" style="max-width:100%; border:1px solid #ccc;"></canvas><br>
-  <button id="download-certificate">Claim Certificate</button>
+  <div id="report-container">
+  <h3>Progress Report</h3>
+  <table id="report-table" border="1">
+    <thead>
+      <tr>
+        <th>Quiz</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+      <tr>
+        <td><strong>Overall Average</strong></td>
+        <td id="overall-average"></td>
+      </tr>
+    </tfoot>
+  </table>
+  <button id="download-report">Download Report</button>
 </div>
-
-</section>
-
-      <section id="projects" class="tab">
-        <h2>My Projects</h2>
-        <p>Projects content goes here...</p>
-      </section>
-
-      <section id="help" class="tab">
-        <h2>Help</h2>
-        <p>Help content goes here...</p>
-      </section>
-
-      <section id="contact" class="tab">
-        <h2>Contact Us</h2>
-        <p>Contact info goes here...</p>
-      </section>
-
-    </main>
-  </div>
-
-<!-- 🔔 Custom Alert -->
-<div id="customAlert" class="custom-alert">
-  <div class="custom-alert-content">
-    <span class="close-btn" onclick="closeAlert()">&times;</span>
-    <p id="alertMessage">This is an alert message!</p>
-    <button onclick="closeAlert()">OK</button>
-  </div>
-</div>
-
-
 
   <script>
     function showTab(event, tabId) {
@@ -170,9 +129,7 @@
       if (event && event.currentTarget) event.currentTarget.classList.add('active');
     }
 
-  
   </script>
-
   <script src="JS/student.js"></script>
 </body>
 </html>
