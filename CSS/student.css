@@ -26,46 +26,69 @@ body {
   height: 100vh;
 }
 
-.sidebar {
-  background: var(--wood-dark);
-  width: 220px;
-  color: var(--cream);
+/* ===== NAVIGATION ===== */
+aside.sidebar {
+  width: 250px;
+  background-color: #8B5E3C; /* wood-dark */
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  gap: 20px;
+  align-items: center;
+  padding: 20px 0;
+  min-height: 100vh;
+  box-shadow: 3px 0 8px rgba(0,0,0,0.1);
 }
 
-.sidebar h2 {
-  margin: 0 0 20px 0;
-  font-weight: 700;
-  font-size: 1.5rem;
-  letter-spacing: 2px;
+
+aside.sidebar h2 {
+  color: #fff;
+  margin-bottom: 25px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
   text-align: center;
-  user-select: none;
 }
 
-.sidebar nav a {
-  color: var(--cream);
+aside.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex-grow: 1;
+}
+
+aside.sidebar nav a {
+  color: #f5f1e9;
   text-decoration: none;
-  display: block;
-  padding: 10px 15px;
-  border-radius: 6px;
-  transition: background 0.3s ease;
+  padding: 14px 20px;
+  font-size: 16px;
   font-weight: 600;
+  border-left: 4px solid transparent;
+  transition: background 0.3s, border-left-color 0.3s;
+}
+
+aside.sidebar nav a:hover,
+aside.sidebar nav a.active {
+  background-color: #A97455; /* wood-medium */
+  border-left-color: #f5f1e9;
+}
+
+aside.sidebar .logout-btn {
+  margin: 20px;
+  background-color: #5a3e1b;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
   cursor: pointer;
+  transition: background 0.3s ease;
+  font-size: 1rem;
+  width: calc(100% - 40px); /* para pantay sa nav links */
 }
 
-.sidebar nav a:hover, .sidebar nav a.active {
-  background: var(--wood-medium);
+aside.sidebar .logout-btn:hover {
+  background-color: #8d6e63;
 }
 
-.sidebar .footer {
-  margin-top: auto;
-  font-size: 0.9rem;
-  color: var(--cream);
-  text-align: center;
-}
 
 .logout-btn {
   margin-top: 10px;
@@ -85,7 +108,7 @@ body {
 
 .main {
   flex: 1;
-  background: var(--wood-light);
+  background: rgb(231, 215, 196);
   padding: 30px 40px;
   display: flex;
   flex-direction: column;

@@ -348,3 +348,17 @@ body {
 .custom-alert-content button:hover {
   background: #6f4428; /* darker brown */
 }
+
+
+.exit-btn {
+  position: fixed;   /* laging nasa screen kahit mag scroll */
+  top: 15px;         /* layo mula taas */
+  right: 20px;       /* layo mula kanan */
+  z-index: 1000;     /* para laging nasa ibabaw */
+}
+
+.exit-btn img {
+  width: 40px;       /* pwede mong palitan depende sa size na gusto mo */
+  height: auto;
+  cursor: pointer;
+}
