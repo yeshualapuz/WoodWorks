@@ -5,5 +5,5 @@ function resetPassword() {
     return;
   }
   alert("Password reset link sent to " + email);
-  window.location.href = "index.html";
+  window.location.href = "login.html";
 }

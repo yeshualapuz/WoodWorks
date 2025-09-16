@@ -1,45 +1,327 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - S.A.W</title>
-    <link rel="stylesheet" href="CSS/Login.css">
-    <script type="module" src="JS/Login.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About S.A.W</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');
+
+    :root {
+      --brown-light: #e8ded2;
+      --brown-medium: #c8b6a6;
+      --brown-dark: #8d7b68;
+      --brown-deep: #5a4633;
+      --text-light: #f5f2ed;
+      --text-dark: #3b2f25;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Quicksand', Arial, sans-serif;
+      background: linear-gradient(135deg, var(--brown-light), var(--brown-medium));
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* Navbar */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--brown-deep);
+      padding: 14px 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--text-light);
+      letter-spacing: 1px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 30px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: var(--text-light);
+      font-weight: 600;
+      transition: color 0.3s, border-bottom 0.3s;
+      padding-bottom: 2px;
+    }
+
+    nav ul li a:hover {
+      color: var(--brown-light);
+      border-bottom: 2px solid var(--brown-light);
+    }
+
+    /* About Section */
+    .about-section {
+      padding: 30px 40px;
+      max-width: 1100px;
+      margin: auto;
+      text-align: left;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .about-section h1 {
+      font-size: 38px;
+      color: var(--brown-deep);
+      margin-bottom: 20px;
+      animation: slideDown 1s ease-in-out;
+    }
+
+    .about-section p {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #4b3c2e;
+      margin-bottom: 50px;
+    }
+
+    /* Objectives Section as Cards */
+    .objectives {
+      margin-top: 50px;
+    }
+
+    .objectives h2 {
+      color: var(--brown-deep);
+      font-size: 28px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .objectives-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--brown-light);
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .card h3 {
+      margin: 15px 0 8px;
+      font-size: 18px;
+      color: var(--brown-deep);
+    }
+
+    .card p {
+      font-size: 15px;
+      color: #4b3c2e;
+      padding: 0 15px 20px;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    }
+
+    /* Text-to-Speech Buttons */
+    .tts-controls {
+      margin-top: 60px;
+      text-align: center;
+    }
+
+    .tts-btn {
+      background: var(--brown-dark);
+      color: var(--text-light);
+      border: none;
+      padding: 12px 28px;
+      font-size: 16px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+      margin: 0 12px;
+      font-weight: 600;
+    }
+
+    .tts-btn:hover {
+      background: var(--brown-deep);
+      transform: scale(1.07);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .about-section {
+        padding: 20px;
+      }
+      .about-section h1 {
+        font-size: 32px;
+      }
+      .about-section p {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 20px;
+      }
+      nav ul {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        margin-top: 10px;
+      }
+      nav ul li {
+        width: 100%;
+      }
+      nav ul li a {
+        display: block;
+        width: 100%;
+        padding: 8px 0;
+      }
+      .about-section h1 {
+        font-size: 28px;
+      }
+      .objectives-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 18px;
+      }
+      .about-section h1 {
+        font-size: 24px;
+      }
+      .about-section p {
+        font-size: 15px;
+      }
+      .card h3 {
+        font-size: 16px;
+      }
+      .card p {
+        font-size: 14px;
+      }
+      .tts-btn {
+        font-size: 14px;
+        padding: 10px 20px;
+        margin: 6px 4px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <!-- Left Panel -->
-    <div class="left-panel">
-        <h1>Welcome to S.A.W</h1>
-        <p>School of Advanced Woodcraft — Your learning journey in woodworking starts here.</p>
-    </div>
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">S.A.W</div>
+    <ul>
+      <li><a href="about.html">About</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
 
-    <!-- Right Panel -->
-    <div class="right-panel">
-        <div class="login-box">
-            <h2>Login</h2>
+  <!-- About Section -->
+  <section class="about-section">
+    <h1>About S.A.W Courseware</h1>
+    <p id="about-text">
+      School of Advanced Woodcraft Courseware is an interactive platform designed to enhance woodworking education. 
+      It provides multimedia lessons, step-by-step tutorials, videos, and interactive exercises 
+      to help learners develop practical skills and creativity in woodworking.
+    </p>
 
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="Enter email" required>
-
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter password" required>
-
-            <a href="forgot2.html" class="forgot-password">Forgot Password?</a>
-            <button id="submit" type="button">Login</button>
-            <p class="register-text"> Don't have an account? <a href="Account.html" class="register-link">Register</a></p>
+    <!-- Objectives -->
+    <div class="objectives">
+      <h2>Objectives</h2>
+      <div class="objectives-grid">
+        <div class="card">
+          <img src="Images/knowledge.jpg" alt="Knowledge">
+          <h3>Enhance woodworking knowledge</h3>
+          <p>Build a strong foundation in woodworking concepts and techniques.</p>
         </div>
+        <div class="card">
+          <img src="images/lessons.jpg" alt="Lessons">
+          <h3>Interactive lessons</h3>
+          <p>Learn step-by-step with multimedia tutorials and examples.</p>
+        </div>
+        <div class="card">
+          <img src="images/hands-on.jpg" alt="Hands-on">
+          <h3>Hands-on learning</h3>
+          <p>Apply creativity through practical woodworking activities.</p>
+        </div>
+        <div class="card">
+          <img src="images/innovation.jpg" alt="Innovation">
+          <h3>Promote innovation</h3>
+          <p>Encourage learners to think creatively and design uniquely.</p>
+        </div>
+      </div>
     </div>
 
-<!-- 🔔 Custom Alert -->
-<div id="customAlert" class="custom-alert" style="display:none;">
-  <div class="custom-alert-content">
-    <span id="alertClose" class="close-btn">&times;</span>
-    <p id="alertMessage">This is an alert message!</p>
-    <button id="alertOk">OK</button>
-  </div>
-</div>
+    <!-- Text-to-Speech Controls -->
+    <div class="tts-controls">
+      <button class="tts-btn" onclick="speakText()">🔊 Listen</button>
+      <button class="tts-btn" onclick="stopText()">⏹ Stop</button>
+    </div>
+  </section>
 
+  <script>
+    let voices = [];
+    function loadVoices() { voices = window.speechSynthesis.getVoices(); }
+    window.speechSynthesis.onvoiceschanged = loadVoices;
 
+    function speakText() {
+      window.speechSynthesis.cancel();
+      const aboutText = document.getElementById("about-text").innerText;
+      const objectives = [...document.querySelectorAll(".card h3")].map(card => card.innerText);
+      const fullText = aboutText + ". Objectives include: " + objectives.join(", ");
+
+      if ('speechSynthesis' in window) {
+        const speech = new SpeechSynthesisUtterance(fullText);
+        const voice = voices.find(v => v.lang.includes("en"));
+        if (voice) speech.voice = voice;
+        speech.lang = "en-US";
+        speech.rate = 1;
+        speech.pitch = 1;
+        window.speechSynthesis.speak(speech);
+      } else { 
+        alert("Sorry, your browser does not support text-to-speech.");
+      } 
+    }
+
+    function stopText() {
+      window.speechSynthesis.cancel();
+    }
+  </script>
 </body>
 </html>

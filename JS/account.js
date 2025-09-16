@@ -82,7 +82,7 @@ async function signup() {
         localStorage.setItem("role", role);
 
         showAlert("Account created successfully as " + role || lastName, () => {
-             window.location.href = "index.html";                      
+             window.location.href = "login.html";                      
         });
         
     } catch (error) {

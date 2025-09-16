@@ -63,23 +63,12 @@
   <section id="courses" class="tab">
     <h2>Woodworking Courses</h2>
     <div class="lessons-list">
-      <h3>Lessons</h3>
-      <ul>
-        <li>Introduction to Woodworking</li>
-        <li>Wood Types and Properties</li>
-        <li>Basic Joinery Techniques</li>
-        <li>Sanding and Finishing</li>
-      </ul>
     </div>
 
-    <div class="quizzes-list" style="margin-top: 20px;">
-      <h3>Quizzes</h3>
+     <!-- NEW WRAPPER ADDED HERE -->
+  <div class="quiz-progress-wrapper">
+    <div class="quizzes-list">
       <div id="quiz-container">
-        <ul>
-          <li><button onclick="startQuiz('woodworking')">Wood Basics Quiz</button></li>
-          <li><button onclick="startQuiz('woodworking')">Joinery Quiz</button></li> 
-          <li><button onclick="startQuiz('woodworking')">Finishing Quiz</button></li>
-        </ul>
       </div>
     </div>
 
@@ -89,27 +78,29 @@
     <canvas id="certificate-canvas" style="max-width:100%; border:1px solid #ccc;"></canvas><br>
     <button id="download-certificate">Claim Certificate</button> </div>
 
-    <div id="report-container">
-    <h3>Progress Report</h3>
-    <table id="report-table" border="1">
-      <thead>
-        <tr>
-          <th>Quiz</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-      <tfoot>
-        <tr>
-          <td><strong>Overall Average</strong></td>
-          <td id="overall-average"></td>
-        </tr>
-      </tfoot>
-    </table>
-    <button id="download-report">Download Report</button>
+  <div class="report-wrapper">
+      <div id="report-container">
+        <h3>Progress Report</h3>
+        <table id="report-table" border="1">
+          <thead>
+            <tr>
+              <th>Quiz</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot>
+            <tr>
+              <td><strong>Overall Average</strong></td>
+              <td id="overall-average"></td>
+            </tr>
+          </tfoot>
+        </table>
+        <button id="download-report">Download Report</button>
+      </div>
+    </div>
   </div>
-  </main>
-  </div>
+
 
   <div id="customAlert" class="custom-alert">
     <div class="custom-alert-content">
