@@ -77,10 +77,6 @@ async function signup() {
             createdAt: new Date()
         });
 
-        localStorage.setItem("firstName", firstName);
-        localStorage.setItem("lastName", lastName);
-        localStorage.setItem("role", role);
-
         showAlert("Account created successfully as " + role || lastName, () => {
              window.location.href = "login.html";                      
         });
