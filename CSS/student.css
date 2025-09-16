@@ -103,55 +103,6 @@ body {
   box-shadow: 0 2px 5px rgba(75,54,33,0.3);
 }
 
-.cards {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.card {
-  background: var(--cream);
-  box-shadow: 0 3px 8px rgba(75,54,33,0.25);
-  border-radius: 12px;
-  flex: 1 1 250px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  color: var(--wood-darker);
-}
-
-.card .title {
-  font-weight: 700;
-  font-size: 1.15rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.card  {
-  font-size: 0.9rem;
-  color: var(--wood-medium);
-}
-
-.stats {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 10px;
-  font-size: 0.9rem;
-}
-
-.stat {
-  text-align: center;
-}
-
-.stat .number {
-  font-weight: 700;
-  font-size: 1.3rem;
-  color: var(--wood-darker);
-}
-
-
 select {
   padding: 5px 10px;
   border-radius: 6px;
@@ -251,7 +202,6 @@ tbody td.status {
   text-decoration: underline;
 }
 
-/* Lessons & Quizzes container */
 .lessons-list, .quizzes-list {
   background: var(--cream);
   padding: 20px;
@@ -270,7 +220,6 @@ tbody td.status {
   padding-bottom: 6px;
 }
 
-/* List style */
 .lessons-list ul, .quizzes-list ul {
   list-style: none;
   padding: 0;
@@ -284,7 +233,6 @@ tbody td.status {
   color: var(--wood-dark);
 }
 
-/* Quiz buttons */
 .quizzes-list button {
   background: var(--wood-medium);
   color: var(--cream);
@@ -301,7 +249,6 @@ tbody td.status {
   transform: translateY(-2px);
 }
 
-
 /* ===== Units Table (Card + Rounded Look) ===== */
 .units-table {
   width: 100%;
@@ -311,7 +258,6 @@ tbody td.status {
   font-family: Arial, sans-serif;
 }
 
-/* Header */
 .units-table thead th {
   background: transparent;
   text-align: left;
@@ -321,7 +267,6 @@ tbody td.status {
   font-size: 17px;
 }
 
-/* Table rows as cards */
 .units-table tbody tr {
   background: #fff;
   border-radius: 12px;
@@ -335,13 +280,11 @@ tbody td.status {
   box-shadow: 0 6px 12px rgba(0,0,0,0.18);
 }
 
-/* Table data cells */
 .units-table tbody td {
   padding: 14px 18px;
   border: none;
 }
 
-/* Rounded corners for first and last cell in row */
 .units-table tbody tr td:first-child {
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
@@ -351,7 +294,6 @@ tbody td.status {
   border-bottom-right-radius: 12px;
 }
 
-/* Assessment text with lock icon aligned */
 .assessment {
   display: inline-flex;
   align-items: center;
@@ -359,13 +301,11 @@ tbody td.status {
   font-weight: 500;
 }
 
-/* Lock icons */
 .lock-icon {
   width: 16px;
   height: 16px;
 }
 
-/* Status pills */
 .status {
   display: inline-block;
   padding: 6px 12px;
@@ -384,7 +324,6 @@ tbody td.status {
   background: #9e9e9e; /* gray */
 }
 
-/* Quiz Container */
 #quiz-container {
   max-width: 700px;
   margin: 30px auto;
@@ -394,7 +333,6 @@ tbody td.status {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* Quiz Title */
 #quiz-container h3 {
   font-size: 1.5rem;
   color: #5a3d2b;
@@ -402,7 +340,6 @@ tbody td.status {
   text-align: center;
 }
 
-/* Questions */
 #quiz-container fieldset {
   border: 2px solid #e0c7a1;
   border-radius: 12px;
@@ -417,7 +354,6 @@ tbody td.status {
   margin-bottom: 10px;
 }
 
-/* Options */
 #quiz-container label {
   display: block;
   padding: 8px 12px;
@@ -440,7 +376,6 @@ tbody td.status {
   color: #5a3d2b;
 }
 
-/* Submit Button */
 #quiz-container button[type="submit"] {
   display: block;
   width: 100%;
@@ -458,7 +393,6 @@ tbody td.status {
   background: #70492f;
 }
 
-/* Quiz Result */
 #quiz-result {
   margin-top: 20px;
   font-size: 1.2rem;
@@ -481,7 +415,6 @@ tbody td.status {
   color: #c62828;
 }
 
-/* Quiz Progress */
 #quiz-progress {
   margin-bottom: 20px;
 }
@@ -507,7 +440,6 @@ tbody td.status {
   transition: width 0.3s ease;
 }
 
-/* Navigation Buttons */
 .quiz-navigation {
   display: flex;
   justify-content: space-between;
@@ -533,7 +465,6 @@ tbody td.status {
   cursor: not-allowed;
 }
 
-/* Quiz Results Styling */
 #quiz-result {
   margin-top: 20px;
   font-weight: bold;
@@ -566,8 +497,6 @@ tbody td.status {
   color: #1a73e8;
 }
 
-
-/* Overlay */
 .custom-alert {
   display: none;
   position: fixed;
@@ -579,7 +508,6 @@ tbody td.status {
   z-index: 9999;
 }
 
-/* Box */
 .custom-alert-content {
   background: #fdfaf6; /* light neutral */
   padding: 22px 30px;
@@ -639,10 +567,28 @@ tbody td.status {
   border: 1px solid #ccc;
 }
 
-
 .display-name {
-  font-weight: 750;          /* same as what you had */
-  font-size: 20;          /* adjust as needed */
-  color: #5c492a;           /* dark neutral */
+  font-weight: 750;
+  font-size: 20;
+  color: #5c492a;
   letter-spacing: 0.1px;
+}
+
+.progress-announcement {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  align-items: flex-start;
+}
+
+.task-progress {
+  flex: 2;
+}
+
+#teacher-announcement {
+  flex: 1;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 6px;
+  background: #f9f9f9;
 }

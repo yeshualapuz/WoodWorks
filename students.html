@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>S.A.W Woodworking Dashboard</title>
   <link rel="stylesheet" href="CSS\student.css" />
+  <script type="module" src="JS/student.js"></script>
+
   <style>
     .tab { display: none; }
     .tab.active { display: contents; }
@@ -12,54 +14,54 @@
 </head>
 <body>
 
-  <div class="container">
-    <aside class="sidebar">
-      <h2>S.A.W Woodworking</h2>
-      <nav>
-        <a href="#" class="active" onclick="showTab(event, 'workshop')">My Workshop</a>
-        <a href="#" onclick="showTab(event, 'courses')">Woodworking Lessons</a>
-      </nav>
-      <button class="logout-btn" id="logout-btn" onclick="logout()">Log Out</button>
-    </aside>
+<div class="container">
+   <aside class="sidebar">
+    <h2>S.A.W Woodworking</h2>
+    <nav>
+      <a href="#" class="active" onclick="showTab(event, 'workshop')">My Workshop</a>
+      <a href="#" onclick="showTab(event, 'courses')">Woodworking Lessons</a>
+    </nav>
+    <button class="logout-btn" id="logout-btn" onclick="logout()">Log Out</button>
+  </aside>
 
-    <main class="main">
-      <section id="workshop" class="tab active">
-        <div class="welcome">
-          <span id="displayName" class="display-name">(Student)</span>, you were last working on
-        </div>
+  <main class="main">
+    <section id="workshop" class="tab active">
+      <div class="welcome">
+        <span id="displayName" class="display-name">(Student)</span>, you were last working on
+      </div>
 
-    <h3>Task Progress</h3>
-    <table class="task-table" border="1">
-      <thead>
-        <tr>
-          <th>Task</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="task-tbody">
-      </tbody>
-    </table>
+  <h3>Task Progress</h3>
+  <div class="progress-announcement">
+    <div class="task-progress">
+      <table class="task-table" border="1">
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="task-tbody"></tbody>
+      </table>
+    </div>
 
-    </section>
+    <div id="teacher-announcement">
+      <h3>Teacher Announcement</h3>
+      <p><strong>Name:</strong> <span id="teacher-name">Mr. Smith</span></p>
+      <p><strong>Date:</strong> <span id="announcement-date">2025-09-16</span></p>
+      <p><strong>Note:</strong> <span id="announcement-note">Don't forget to submit Quiz 1 by Friday!</span></p>
 
-        <div id="teacher-announcement" style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
-  <h3>Teacher Announcement</h3>
-  <p><strong>Name:</strong> <span id="teacher-name">Mr. Smith</span></p>
-  <p><strong>Date:</strong> <span id="announcement-date">2025-09-16</span></p>
-  <p><strong>Note:</strong> <span id="announcement-note">Don't forget to submit Quiz 1 by Friday!</span></p>
-
-  <div style="margin-top: 15px;">
-    <label for="student-comment"><strong>Your Comment:</strong></label><br>
-    <textarea id="student-comment" rows="4" style="width: 100%;" placeholder="Write your comment..."></textarea><br>
-    <button id="submit-comment" style="margin-top: 5px;">Submit Comment</button>
+      <div style="margin-top: 15px;">
+        <label for="student-comment"><strong>Your Comment:</strong></label><br>
+        <textarea id="student-comment" rows="4" style="width: 100%;" placeholder="Write your comment..."></textarea><br>
+        <button id="submit-comment" style="margin-top: 5px;">Submit Comment</button>
+      </div>
+      <div id="comment-feedback" style="color: green; margin-top: 10px;"></div>
+    </div>
   </div>
-
-  <div id="comment-feedback" style="color: green; margin-top: 10px;"></div>
-</div>
+  </section>
 
   <section id="courses" class="tab">
     <h2>Woodworking Courses</h2>
-
     <div class="lessons-list">
       <h3>Lessons</h3>
       <ul>
@@ -81,12 +83,30 @@
       </div>
     </div>
 
-
     <div id="certificate-container" style="display:none; text-align:center; margin-top:30px;">
     <h3>You earned your Certificate</h3>
     <p>The certificate is ready to claim for you. You did an amazing job in the course and earned it.</p>
     <canvas id="certificate-canvas" style="max-width:100%; border:1px solid #ccc;"></canvas><br>
-    <button id="download-certificate">Claim Certificate</button>
+    <button id="download-certificate">Claim Certificate</button> </div>
+
+    <div id="report-container">
+    <h3>Progress Report</h3>
+    <table id="report-table" border="1">
+      <thead>
+        <tr>
+          <th>Quiz</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td><strong>Overall Average</strong></td>
+          <td id="overall-average"></td>
+        </tr>
+      </tfoot>
+    </table>
+    <button id="download-report">Download Report</button>
   </div>
   </main>
   </div>
@@ -99,26 +119,6 @@
     </div>
   </div>
 
-  <div id="report-container">
-  <h3>Progress Report</h3>
-  <table id="report-table" border="1">
-    <thead>
-      <tr>
-        <th>Quiz</th>
-        <th>Score</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-    <tfoot>
-      <tr>
-        <td><strong>Overall Average</strong></td>
-        <td id="overall-average"></td>
-      </tr>
-    </tfoot>
-  </table>
-  <button id="download-report">Download Report</button>
-</div>
-
   <script>
     function showTab(event, tabId) {
       if (event && event.preventDefault) event.preventDefault();
@@ -128,8 +128,6 @@
       document.querySelectorAll('aside nav a').forEach(link => link.classList.remove('active'));
       if (event && event.currentTarget) event.currentTarget.classList.add('active');
     }
-
   </script>
-  <script src="JS/student.js"></script>
 </body>
 </html>
