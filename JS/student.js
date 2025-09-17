@@ -36,14 +36,32 @@ const quizzes = lessons.map((lesson, index) => ({
   file: `quiz${index + 1}`
 }));
 
-onAuthStateChanged(auth, user => {
+function capitalize(str) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+onAuthStateChanged(auth, async user => {
   if (user) {
     currentUID = user.uid;
-    document.getElementById("displayName").textContent = user.displayName || "(Student)";
+
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+
+    let studentName = "(Student)";
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      const first = capitalize(data.firstName);
+      const last = capitalize(data.lastName);
+      studentName = `${first} ${last}`.trim();
+    }
+
+    document.getElementById("displayName").textContent = studentName || "(Student)";
+
     renderLessons();
     renderQuizzes();
     renderTaskTable();
     renderProgressReport();
+    renderAnnouncement();
   } else {
     window.location.href = "login.html";
   }
@@ -219,7 +237,7 @@ async function evaluateQuiz(quiz) {
   const percent = Math.round((score / total) * 100);
 
   const quizRef = doc(db, `users/${currentUID}/quizzes/${quiz.file}`);
-  await setDoc(quizRef, { unlocked: true, score, total, percent }, { merge: true });
+  await setDoc(quizRef, { unlocked: true, score, total, percent, timestamp: new Date() }, { merge: true });
 
   setTimeout(() => {
     renderQuizzes();
@@ -235,7 +253,6 @@ async function evaluateQuiz(quiz) {
   }));
   if (allDone.every(v => v)) showCertificate(auth.currentUser.displayName);
 
-  await evaluateQuiz(quiz);
   renderProgressReport();
 }
 
@@ -265,22 +282,35 @@ async function renderTaskTable() {
   }
 }
 
-document.getElementById("submit-comment").addEventListener("click", async () => {
-  const commentBox = document.getElementById("student-comment");
-  const feedback = document.getElementById("comment-feedback");
-  const comment = commentBox.value.trim();
+async function renderAnnouncement() {
+  const container = document.getElementById("teacher-announcement");
 
-  if (!comment) {
-    feedback.style.color = "red";
-    feedback.textContent = "Please write a comment before submitting.";
-    return;
+  try {
+    const announcementRef = doc(db, "announcements", "latest");
+    const snap = await getDoc(announcementRef);
+
+    if (snap.exists()) {
+      const data = snap.data();
+      container.innerHTML = `
+        <h3>Teacher Announcement</h3>
+        <p><strong>Name:</strong> ${data.teacherName || ""}</p>
+        <p><strong>Date:</strong> ${data.date || ""}</p>
+        <p><strong>Note:</strong> ${data.note || ""}</p>
+      `;
+    } else {
+      container.innerHTML = `
+        <h3>Teacher Announcement</h3>
+        <p>No announcement yet...</p>
+      `;
+    }
+  } catch (err) {
+    console.error("Error loading announcement:", err);
+    container.innerHTML = `
+      <h3>Teacher Announcement</h3>
+      <p>No announcement yet...</p>
+    `;
   }
-
-  await addDoc(collection(db, `users/${currentUID}/comments`), { text: comment, date: new Date().toISOString() });
-  feedback.style.color = "green";
-  feedback.textContent = "Comment submitted!";
-  commentBox.value = "";
-});
+}
 
 function logout() {
   signOut(auth).then(() => window.location.href = "index.html");
@@ -315,4 +345,12 @@ async function renderProgressReport() {
 
   const avgPercent = completedCount > 0 ? Math.round(totalPercent / completedCount) : 0;
   overallTd.textContent = `${avgPercent}%`;
+
+  try {
+    await setDoc(doc(db, "users", currentUID), { progress: avgPercent }, { merge: true });
+    console.log("Progress saved:", avgPercent);
+  } catch (err) {
+    console.error("Error saving progress:", err);
+  }
 }
+

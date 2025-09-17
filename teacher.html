@@ -25,21 +25,14 @@
       <button id="btn-announcements" aria-pressed="false" aria-label="Post Announcement">
         📢 <span>Post Announcement</span>
       </button>
-     
-    </nav>
+     </nav>
      <button class="logout-btn" id="logout-btn">Log Out</button>
-  </aside>
-
+    </aside>
 
   <main class="content" role="main" tabindex="-1">
-    <header>
-      <h1>S.A.W Woodworking - Teacher <span id="teacherName" class="teacher-name"></span>'s Dashboard</h1>      
-    </header>
-
+    <header><h1>S.A.W Woodworking - Teacher <span id="teacherName" class="teacher-name"></span>'s Dashboard</h1></header>
     <section id="section-courses" aria-labelledby="title-courses" tabindex="0">
-      <h2 id="title-courses">Courses Overview <button id="add-course-btn">Add Course</button></h2>
         <table aria-describedby="desc-courses" role="grid">
-          <caption id="desc-courses" class="sr-only">List of courses with details</caption>
           <thead>
             <tr>
               <th scope="col">Course Name</th>
@@ -50,25 +43,24 @@
           </thead>
           <tbody id="courses-tbody"></tbody>
         </table>
-        <div id="quiz-section" style="margin-top:20px; padding:15px; border:1px solid #ccc; background:#f9f9f9;"></div>
     </section>
 
     <section id="section-students" aria-labelledby="title-students" tabindex="0" hidden>
       <h2 id="title-students">Student Progress Overview</h2>
-      <table aria-describedby="desc-students" role="grid">
-        <caption id="desc-students" class="sr-only">List of students with their workshop, course, module, progress percentage, and status.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Student Name</th>
-            <th scope="col">Workshop</th>
-            <th scope="col">Course</th>
-            <th scope="col">Module</th>
-            <th scope="col">Progress</th>
-            <th scope="col">Status</th>
-          </tr>
-        </thead>
-        <tbody id="students-tbody"></tbody>
-      </table>
+        <table aria-describedby="desc-students" role="grid">
+          <thead>
+            <tr>
+              <th scope="col">Student Name</th>
+              <th scope="col">Progress</th>
+            </tr>
+          </thead>
+          <tbody id="students-tbody"></tbody>
+        </table>
+
+      <div style="margin-top: 10px; display: flex; gap: 10px; justify-content: center;">
+        <button id="prevPageBtn" disabled>Previous</button>
+        <button id="nextPageBtn">Next</button>
+      </div>
     </section>
 
     <section id="section-submissions" aria-labelledby="title-submissions" tabindex="0" hidden>
@@ -95,16 +87,22 @@
 
     <section id="section-announcements" aria-labelledby="title-announcements" tabindex="0" hidden>
       <h2 id="title-announcements">Post Announcement</h2>
-      <form id="announcement-form" aria-describedby="announcement-desc">
-        <label for="announcement-text" id="announcement-desc" class="sr-only">
-          Write your announcement below and submit to post to students.
-        </label>
+
+      <div id="announcement-messages" style="margin-top:10px; font-weight:bold;">
+      <form id="announcement-form">
         <textarea id="announcement-text" placeholder="Write your announcement here..." required></textarea>
         <button type="submit">Post Announcement</button>
       </form>
-      <div id="announcement-messages" aria-live="polite"></div>
-    </section>
+      </div>
 
+      <div id="latest-announcement-block" style="margin-top:20px; display:none;">
+        <h3>Latest Announcement</h3>
+        <p><strong>Name:</strong> <span id="latest-teacher-name"></span></p>
+        <p><strong>Date:</strong> <span id="latest-announcement-date"></span></p>
+        <p><strong>Note:</strong> <span id="latest-announcement-note"></span></p>
+        <button id="delete-announcement" style="display:none;">Delete Announcement</button>
+      </div>
+    </section>
   </main>
 </body>
 </html>

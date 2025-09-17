@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { collection, getDocs, getFirestore, doc, getDoc, setDoc, deleteDoc, query, orderBy, limit, startAfter } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAubnoJNXMp0eJ9A2bQM1FaOfMlk6X0Les",
@@ -12,6 +13,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
+const db = getFirestore(app);
 
 const btnCourses = document.getElementById("btn-courses");
 const btnStudents = document.getElementById("btn-students");
@@ -55,129 +57,19 @@ btnStudents.addEventListener("click", () => setActiveSection("students"));
 btnSubmissions.addEventListener("click", () => setActiveSection("submissions"));
 btnAnnouncements.addEventListener("click", () => setActiveSection("announcements"));
 
-setActiveSection("courses");
-
-const coursesTbody = document.getElementById("courses-tbody");
-
-const fixedCourses = [
-  {
-    id: "c1",
-    name: "Woodworking Basics",
-    students: 0,
-    status: "Active",
-    modules: [
-      { type: "lesson", title: "Intro to Tools", link: "" },
-      { type: "quiz", title: "Tools Quiz", link: "woodworking" },
-      { type: "pdf", title: "Safety Manual", link: "../Lessons/Wood-Working.pdf" }
-    ]
-  },
-  {
-    id: "c2",
-    name: "Advanced Woodworking",
-    students: 0,
-    status: "Active",
-    modules: [
-      { type: "lesson", title: "Carving Techniques", link: "" },
-      { type: "quiz", title: "Carving Quiz", link: "woodworking" },
-      { type: "pdf", title: "Advanced Joints Guide", link: "" }
-    ]
-  },
-  {
-    id: "c3",
-    name: "Wood Basics - Intro to Joinery",
-    students: 0,
-    status: "Active",
-    modules: [
-      { type: "lesson", title: "Basic Joinery", link: "" },
-      { type: "quiz", title: "Joinery Quiz", link: "woodworking" }, 
-      { type: "pdf", title: "Joinery Handbook", link: "" }
-    ]
-  }
-];
-
-function renderCourses(courses) {
-  coursesTbody.innerHTML = "";
-  courses.forEach(course => {
-    const tr = document.createElement("tr");
-    tr.tabIndex = 0;
-
-    tr.innerHTML = `
-      <td><strong>${course.name}</strong></td>
-      <td>${course.students}</td>
-      <td>${course.modules ? course.modules.length : 0}</td>
-      <td>${course.status}</td>
-    `;
-
-    const detailsTr = document.createElement("tr");
-    detailsTr.innerHTML = `
-      <td colspan="5">
-        <div class="course-details" style="margin-top:10px;">
-          <table class="inner-table" style="width:100%; border-collapse: collapse;">
-            <thead>
-              <tr>
-                <th style="border-bottom:1px solid #ccc; text-align:left;">Type</th>
-                <th style="border-bottom:1px solid #ccc; text-align:left;">Title</th>
-                <th style="border-bottom:1px solid #ccc; text-align:left;">Link</th>
-              </tr>
-            </thead>
-            <tbody class="modules-tbody"></tbody>
-          </table>
-        </div>
-      </td>
-    `;
-
-    coursesTbody.appendChild(tr);
-    coursesTbody.appendChild(detailsTr);
-    renderModules(course, detailsTr.querySelector(".modules-tbody"));
-  });
-}
-
-function renderModules(course, tbody) {
-  tbody.innerHTML = "";
-  if (!course.modules) return;
-
-  course.modules.forEach((mod) => {
-    const tr = document.createElement("tr");
-
-if (mod.type === "quiz" && mod.link) {
-  const tdType = document.createElement("td");
-  tdType.textContent = mod.type;
-
-  const tdTitle = document.createElement("td");
-  tdTitle.textContent = mod.title;
-
-  const tdButton = document.createElement("td");
-  const button = document.createElement("button");
-  button.textContent = "Open";
-  button.addEventListener("click", () => viewQuiz(mod.link));
-
-  tdButton.appendChild(button);
-
-  tr.appendChild(tdType);
-  tr.appendChild(tdTitle);
-  tr.appendChild(tdButton);
-}
- else {
-      tr.innerHTML = `
-        <td>${mod.type}</td>
-        <td>${mod.title}</td>
-        <td>${mod.link ? `<a href="${mod.link}" target="_blank">Open</a>` : "-"}</td>
-      `;
-    }
-
-    tbody.appendChild(tr);
-  });
-}
-
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const db = getFirestore(app);
-
 document.addEventListener("DOMContentLoaded", () => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      renderCourses(fixedCourses);
+      renderLatestAnnouncement();
+      loadAndSortStudents();
+      loadSubmissions();
 
-      // ✅ Fetch teacher username safely
+      function capitalize(str) {
+        return str && str.length > 0
+          ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+          : "";
+      }
+
       try {
         const ref = doc(db, "users", user.uid);
         const snapshot = await getDoc(ref);
@@ -186,7 +78,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (teacherNameElem) {
           if (snapshot.exists()) {
             const data = snapshot.data();
-            const fullName = [data.firstName, data.lastName].filter(Boolean).join(" ");
+            const firstName = capitalize(data.firstName);
+            const lastName = capitalize(data.lastName);
+            const fullName = [firstName, lastName].filter(Boolean).join(" ");
             teacherNameElem.textContent = fullName || user.email;
           } else {
             teacherNameElem.textContent = user.email;
@@ -204,6 +98,102 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+const announcementForm = document.getElementById("announcement-form");
+const announcementText = document.getElementById("announcement-text");
+const announcementMessages = document.getElementById("announcement-messages");
+
+announcementForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const note = announcementText.value.trim();
+  if (!note) {
+    announcementMessages.textContent = "Please write an announcement before posting.";
+    announcementMessages.style.color = "red";
+    return;
+  }
+
+  try {
+    const user = auth.currentUser;
+    let teacherName = user?.email || "Unknown Teacher";
+
+    const ref = doc(db, "users", user.uid);
+    const snapshot = await getDoc(ref);
+    if (snapshot.exists()) {
+      const data = snapshot.data();
+      teacherName = [data.firstName, data.lastName].filter(Boolean).join(" ") || teacherName;
+    }
+
+    const announcementRef = doc(db, "announcements", "latest");
+    await setDoc(announcementRef, {
+      teacherId: user.uid,
+      teacherName,
+      date: new Date().toISOString().split("T")[0],
+      note
+    });
+
+    announcementMessages.textContent = "Announcement posted successfully!";
+    announcementMessages.style.color = "green";
+    announcementText.value = "";
+    renderLatestAnnouncement();
+
+  } catch (err) {
+    console.error("Error posting announcement:", err);
+    announcementMessages.textContent = "Failed to post announcement. Please try again.";
+    announcementMessages.style.color = "red";
+  }
+});
+
+async function renderLatestAnnouncement() {
+  const block = document.getElementById("latest-announcement-block");
+  const nameElem = document.getElementById("latest-teacher-name");
+  const dateElem = document.getElementById("latest-announcement-date");
+  const noteElem = document.getElementById("latest-announcement-note");
+  const deleteBtn = document.getElementById("delete-announcement");
+
+  try {
+    const ref = doc(db, "announcements", "latest");
+    const snap = await getDoc(ref);
+
+    if (snap.exists()) {
+      const data = snap.data();
+      nameElem.textContent = data.teacherName || "";
+      dateElem.textContent = data.date || "";
+      noteElem.textContent = data.note || "";
+
+      block.style.display = "block";
+      if (auth.currentUser && auth.currentUser.uid === data.teacherId) {
+        deleteBtn.style.display = "inline-block";
+      } else {
+        deleteBtn.style.display = "none";
+      }
+    } else {
+      block.style.display = "none";
+    }
+  } catch (err) {
+    console.error("Error fetching announcement:", err);
+    block.style.display = "none";
+  }
+}
+
+const deleteBtn = document.getElementById("delete-announcement");
+
+deleteBtn.addEventListener("click", async () => {
+  if (!confirm("Are you sure you want to delete this announcement?")) return;
+
+  try {
+    const announcementRef = doc(db, "announcements", "latest");
+    await deleteDoc(announcementRef);
+
+    document.getElementById("latest-teacher-name").textContent = "";
+    document.getElementById("latest-announcement-date").textContent = "";
+    document.getElementById("latest-announcement-note").textContent = "No announcement yet...";
+
+    alert("Announcement deleted.");
+  } catch (err) {
+    console.error("Error deleting announcement:", err);
+    alert("Failed to delete announcement.");
+  }
+});
 
 document.getElementById("logout-btn").addEventListener("click", () => {
   signOut(auth).then(() => {
@@ -213,58 +203,226 @@ document.getElementById("logout-btn").addEventListener("click", () => {
   });
 });
 
-async function viewQuiz(quizId) {
-  const response = await fetch(`../Quizzes/${quizId}.json`);
-  const quiz = await response.json();
+const TOTAL_LESSONS = 10;
+const TOTAL_QUIZZES = 10;
+const PAGE_SIZE = 10;
 
-  let html = `<h1>${quiz.title}</h1><ol>`;
+let students = [];
+let currentPage = 0;
 
-  quiz.questions.forEach((q, index) => {
-    html += `
-      <li>
-        <p>${q.q}</p>
-        <form>
-          ${q.options.map(option => `
-            <label style="display:block; margin: 4px 0;">
-              <input type="radio" name="q${index}" value="${option}" disabled ${option === q.answer ? 'checked' : ''}>
-              ${option}
-            </label>
-          `).join("")}
-        </form>
-      </li>
-    `;
-  });
+async function loadAndSortStudents() {
+  students = [];
+  const querySnapshot = await getDocs(collection(db, "users"));
 
-  html += `</ol>`;
+  for (const docSnap of querySnapshot.docs) {
+    const data = docSnap.data();
+    if (!data || data.role !== "student") continue;
 
-  const newTab = window.open("", "_blank");
-  newTab.document.write(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>${quiz.title}</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f9f9f9;
-          }
-          h1 {
-            color: #333;
-          }
-          li {
-            margin-bottom: 20px;
-          }
-          input[disabled] {
-            cursor: default;
-          }
-        </style>
-      </head>
-      <body>
-        ${html}
-      </body>
-    </html>
-  `);
-  newTab.document.close();
+    const first = data.firstName
+      ? data.firstName.charAt(0).toUpperCase() + data.firstName.slice(1).toLowerCase()
+      : "";
+    const last = data.lastName
+      ? data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1).toLowerCase()
+      : "";
+    const fullName = (first + " " + last).trim() || data.email || docSnap.id;
+
+    const lessonsSnap = await getDocs(collection(db, `users/${docSnap.id}/lessons`));
+    const lessonsOpened = lessonsSnap.docs.filter(d => d.data().opened).length;
+    const lessonPercent = TOTAL_LESSONS > 0 ? Math.round((lessonsOpened / TOTAL_LESSONS) * 100) : 0;
+
+    const quizzesSnap = await getDocs(collection(db, `users/${docSnap.id}/quizzes`));
+    const quizzesTaken = quizzesSnap.docs.filter(d => d.data().score !== undefined).length;
+    const quizPercent = TOTAL_QUIZZES > 0 ? Math.round((quizzesTaken / TOTAL_QUIZZES) * 100) : 0;
+
+    const overallProgress = Math.round((lessonPercent + quizPercent) / 2);
+
+    students.push({ fullName, overallProgress });
+  }
+
+  students.sort((a, b) => a.fullName.localeCompare(b.fullName));
+  currentPage = 0;
+  renderCurrentPage();
 }
 
+function renderCurrentPage() {
+  const tbody = document.getElementById("students-tbody");
+  tbody.innerHTML = "";
+
+  const start = currentPage * PAGE_SIZE;
+  const end = start + PAGE_SIZE;
+  const pageStudents = students.slice(start, end);
+
+  for (const student of pageStudents) {
+    let barColor = "#4caf50";
+    if (student.overallProgress < 40) barColor = "#f44336";
+    else if (student.overallProgress < 70) barColor = "#ff9800";
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${student.fullName}</td>
+      <td style="display: flex; align-items: center; gap: 8px;">
+        <div style="flex: 1; background: #eee; border-radius: 4px; overflow: hidden; height: 16px;">
+          <div style="width: ${student.overallProgress}%; background: ${barColor}; height: 100%;"></div>
+        </div>
+        <span style="white-space: nowrap;">${student.overallProgress}%</span>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  updatePaginationButtons();
+}
+
+function updatePaginationButtons() {
+  document.getElementById("prevPageBtn").disabled = currentPage === 0;
+  document.getElementById("nextPageBtn").disabled = (currentPage + 1) * PAGE_SIZE >= students.length;
+}
+
+document.getElementById("nextPageBtn").addEventListener("click", () => {
+  if ((currentPage + 1) * PAGE_SIZE < students.length) {
+    currentPage++;
+    renderCurrentPage();
+  }
+});
+
+document.getElementById("prevPageBtn").addEventListener("click", () => {
+  if (currentPage > 0) {
+    currentPage--;
+    renderCurrentPage();
+  }
+});
+
+loadAndSortStudents();
+
+let submissionPage = 1;
+const submissionsPerPage = 10;
+let allSubmissions = [];
+
+async function loadSubmissions(page = 1) {
+  const tbody = document.getElementById("submissions-tbody");
+  tbody.innerHTML = "<tr><td colspan='4'>Loading...</td></tr>";
+
+  try {
+    const usersSnapshot = await getDocs(collection(db, "users"));
+    const submissions = [];
+
+    for (const userDoc of usersSnapshot.docs) {
+      const userData = userDoc.data();
+      if (!userData || userData.role !== "student") continue;
+
+      const userId = userDoc.id;
+      const first = userData.firstName ? userData.firstName.charAt(0).toUpperCase() + userData.firstName.slice(1).toLowerCase() : "";
+      const last = userData.lastName ? userData.lastName.charAt(0).toUpperCase() + userData.lastName.slice(1).toLowerCase() : "";
+      const fullName = `${first} ${last}`.trim() || userData.email || userId;
+
+      const quizzesSnap = await getDocs(collection(db, `users/${userId}/quizzes`));
+      for (const quizDoc of quizzesSnap.docs) {
+        const quizData = quizDoc.data();
+        const quizName = quizData.title || quizDoc.id;
+        const score = quizData.score;
+
+        const timestamp = quizData.timestamp?.toDate?.();
+        const submittedDate = timestamp
+          ? timestamp.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+          : "N/A";
+
+        const status = score !== undefined ? "Completed" : "Incomplete";
+
+        submissions.push({
+          fullName,
+          quizName,
+          submittedDate,
+          status
+        });
+      }
+    }
+
+    if (submissions.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4">No submissions found.</td></tr>`;
+      return;
+    }
+
+    submissions.sort((a, b) => a.fullName.localeCompare(b.fullName));
+
+    allSubmissions = submissions; 
+    submissionPage = page;
+
+    renderSubmissionsPage(submissionPage);
+
+  } catch (err) {
+    console.error("Error loading submissions:", err);
+    tbody.innerHTML = `<tr><td colspan="4">Error loading submissions.</td></tr>`;
+  }
+}
+
+function renderSubmissionsPage(page) {
+  const tbody = document.getElementById("submissions-tbody");
+  tbody.innerHTML = "";
+
+  const startIndex = (page - 1) * submissionsPerPage;
+  const endIndex = Math.min(startIndex + submissionsPerPage, allSubmissions.length);
+
+  for (let i = startIndex; i < endIndex; i++) {
+    const sub = allSubmissions[i];
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${sub.fullName}</td>
+      <td>${sub.quizName}</td>
+      <td>${sub.submittedDate}</td>
+      <td>${sub.status}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  renderPaginationControls();
+}
+
+function renderPaginationControls() {
+  let pagination = document.getElementById("pagination-controls");
+  if (!pagination) {
+    pagination = document.createElement("div");
+    pagination.id = "pagination-controls";
+    pagination.style.marginTop = "10px";
+    document.getElementById("section-submissions").appendChild(pagination);
+  }
+
+  pagination.innerHTML = "";
+
+  const totalPages = Math.ceil(allSubmissions.length / submissionsPerPage);
+
+  if (totalPages <= 1) return;
+
+  const prevBtn = document.createElement("button");
+  prevBtn.textContent = "Prev";
+  prevBtn.disabled = submissionPage === 1;
+  prevBtn.addEventListener("click", () => {
+    if (submissionPage > 1) {
+      submissionPage--;
+      renderSubmissionsPage(submissionPage);
+    }
+  });
+  pagination.appendChild(prevBtn);
+
+  for (let p = 1; p <= totalPages; p++) {
+    const pageBtn = document.createElement("button");
+    pageBtn.textContent = p;
+    pageBtn.disabled = p === submissionPage;
+    pageBtn.style.margin = "0 3px";
+    pageBtn.addEventListener("click", () => {
+      submissionPage = p;
+      renderSubmissionsPage(submissionPage);
+    });
+    pagination.appendChild(pageBtn);
+  }
+
+  const nextBtn = document.createElement("button");
+  nextBtn.textContent = "Next";
+  nextBtn.disabled = submissionPage === totalPages;
+  nextBtn.addEventListener("click", () => {
+    if (submissionPage < totalPages) {
+      submissionPage++;
+      renderSubmissionsPage(submissionPage);
+    }
+  });
+  pagination.appendChild(nextBtn);
+}
