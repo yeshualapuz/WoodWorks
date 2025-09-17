@@ -1,0 +1,35 @@
+{
+  "title": "Lesson 14 Quiz: Finishing Techniques",
+  "questions": [
+    {
+      "id": 1,
+      "q": "What is the main purpose of applying a finish to wood?",
+      "options": ["To make it heavier", "To protect and enhance its appearance", "To make sanding unnecessary", "To cover up defects only"],
+      "answer": "To protect and enhance its appearance"
+    },
+    {
+      "id": 2,
+      "q": "Which sanding method is best for edges, corners, and detailed areas?",
+      "options": ["Belt sanding", "Hand sanding", "Random orbital sanding", "Drum sanding"],
+      "answer": "Hand sanding"
+    },
+    {
+      "id": 3,
+      "q": "What is the advantage of using a random orbital sander?",
+      "options": ["It creates deep grooves quickly", "It removes large amounts of wood", "It prevents visible swirl marks", "It requires no sanding discs"],
+      "answer": "It prevents visible swirl marks"
+    },
+    {
+      "id": 4,
+      "q": "Which scraper is specifically designed for curved surfaces like bearings?",
+      "options": ["Flat Scraper", "Half-Round Scraper", "Hook Scraper", "Bullnose Scraper"],
+      "answer": "Half-Round Scraper"
+    },
+    {
+      "id": 5,
+      "q": "Which material can be mixed with wood glue to make an effective homemade wood filler?",
+      "options": ["Wax", "Sawdust", "Metal shavings", "Caulk"],
+      "answer": "Sawdust"
+    }
+  ]
+}

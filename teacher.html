@@ -32,7 +32,10 @@
   <main class="content" role="main" tabindex="-1">
     <header><h1>S.A.W Woodworking - Teacher <span id="teacherName" class="teacher-name"></span>'s Dashboard</h1></header>
     <section id="section-courses" aria-labelledby="title-courses" tabindex="0">
-      <input type="text" id="student-search" placeholder="Search student by name..." style="margin-bottom:10px; padding:5px; width:300px;">
+      <div class="search-container">
+        <img src="Images/search.png" alt="Search" class="search-icon">
+        <input type="text" id="student-search" placeholder="Search Student Name...">
+      </div>
         <table>
           <thead>
             <tr>
@@ -59,7 +62,6 @@
           <tbody id="students-tbody"></tbody>
         </table>
 
-      <div style="margin-top: 10px; display: flex; gap: 10px; justify-content: center;">
         <button id="prevPageBtn" disabled>Previous</button>
         <button id="nextPageBtn">Next</button>
       </div>
@@ -97,7 +99,7 @@
     <button type="submit">Post Announcement</button>
   </form>
 
-  <div id="announcements-list" style="margin-top:20px;"></div>
+  <div id="announcements-list"></div>
 </section>
 
   </main>

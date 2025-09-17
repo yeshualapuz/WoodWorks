@@ -284,6 +284,84 @@ tbody td.status {
   transform: translateY(-2px);
 }
 
+/* ===== ACTIVITY STYLES ===== */
+.activity-card {
+  display: none;
+  margin: 15px 0;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #f9f9f9;
+}
+
+.activity-card.active {
+  display: block;
+}
+
+.activity-card h3 {
+  margin: 0 0 6px 0;
+  color: #8b5e3c;
+}
+
+.activity-card textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #c6a786;
+  margin-bottom: 10px;
+  resize: vertical;
+  background: #faf4ee;
+}
+
+.submit-activity {
+  background: #8B5E3C;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.submit-activity:hover { background: #70492f; }
+
+.activity-feedback {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+/* Activity button that appears between quizzes */
+.activity-btn {
+  background: #fff4ea;
+  border: 1px solid #d8bfa3;
+  border-radius: 8px;
+  font-weight: 700;
+  color: #8b4513;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.activity-btn:disabled {
+  background: #f2efe8;
+  color: #bba98b;
+  border-color: #e6dbca;
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
+.activity-btn .done { color: green; }
+
+/* small check shown inline */
+.activity-done {
+  display: inline-block;
+  margin-right: 6px;
+  color: #2e7d32;
+  font-weight: 800;
+}
+
+
 /* ===== Units Table (Card + Rounded Look) ===== */
 .units-table {
   width: 100%;

@@ -170,7 +170,7 @@ async function renderAnnouncements() {
     container.innerHTML = "";
     announcements.forEach(a => {
       const block = document.createElement("div");
-      block.style.border = "1px solid #ccc";
+      block.style.border = "1px solid #fde7d2ff";
       block.style.padding = "10px";
       block.style.marginBottom = "10px";
       block.style.borderRadius = "5px";
@@ -253,14 +253,14 @@ function renderCurrentPage() {
 
   for (const student of pageStudents) {
     let barColor = "#4caf50";
-    if (student.overallProgress < 40) barColor = "#f44336";
-    else if (student.overallProgress < 70) barColor = "#ff9800";
+    if (student.overallProgress < 40) barColor = "#c4371eff";
+    else if (student.overallProgress < 70) barColor = "#5e3b08ff";
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${student.fullName}</td>
       <td style="display: flex; align-items: center; gap: 8px;">
-        <div style="flex: 1; background: #eee; border-radius: 4px; overflow: hidden; height: 16px;">
+        <div style="flex: 1; background: #e4cab1ff; border-radius: 4px; overflow: hidden; height: 16px;">
           <div style="width: ${student.overallProgress}%; background: ${barColor}; height: 100%;"></div>
         </div>
         <span style="white-space: nowrap;">${student.overallProgress}%</span>
@@ -289,7 +289,7 @@ document.getElementById("prevPageBtn").addEventListener("click", () => {
     renderCurrentPage();
   }
 });
-loadAndSortStudents();
+
 
 let submissionPage = 1;
 const submissionsPerPage = 10;
@@ -353,19 +353,74 @@ function renderSubmissionsPage(page) {
 
   const startIndex = (page - 1) * submissionsPerPage;
   const endIndex = Math.min(startIndex + submissionsPerPage, allSubmissions.length);
+  const pageSubmissions = allSubmissions.slice(startIndex, endIndex);
 
-  for (let i = startIndex; i < endIndex; i++) {
-    const sub = allSubmissions[i];
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${sub.fullName}</td>
-      <td>${sub.quizName}</td>
-      <td>${sub.submittedDate}</td>
-      <td>${sub.status}</td>
-    `;
-    tbody.appendChild(tr);
-  }
-  renderPaginationControls();
+    if (pageSubmissions.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4">No submissions found.</td></tr>`;
+      return;
+    }
+
+    const grouped = {};
+    pageSubmissions.forEach(sub => {
+      if (!grouped[sub.fullName]) grouped[sub.fullName] = [];
+      grouped[sub.fullName].push(sub);
+    });
+
+    let idx = 0;
+    Object.keys(grouped).forEach(studentName => {
+      const studentId = "submission_" + (idx++);
+
+      // Parent row
+      const parentTr = document.createElement("tr");
+      parentTr.classList.add("submission-parent");
+      parentTr.dataset.studentId = studentId;
+
+      parentTr.innerHTML = `
+        <td colspan="4">
+          <button class="toggle-btn" aria-expanded="false">▶</button>
+          ${studentName}
+          <small style="color:#666;">(${grouped[studentName].length} submissions)</small>
+        </td>
+      `;
+      tbody.appendChild(parentTr);
+
+      // Child rows
+      grouped[studentName].forEach(sub => {
+        const childTr = document.createElement("tr");
+        childTr.classList.add("submission-child");
+        childTr.dataset.studentId = studentId;
+        childTr.style.display = "none";
+
+        childTr.innerHTML = `
+          <td></td>
+          <td>${sub.quizName}</td>
+          <td>${sub.submittedDate}</td>
+          <td>${sub.status}</td>
+        `;
+        tbody.appendChild(childTr);
+      });
+
+      // Toggle expand/collapse
+      const toggleBtn = parentTr.querySelector(".toggle-btn");
+      const toggle = () => {
+        const expanded = toggleBtn.getAttribute("aria-expanded") === "true";
+        const newState = !expanded;
+        toggleBtn.setAttribute("aria-expanded", String(newState));
+
+        const childRows = tbody.querySelectorAll(
+          `tr.submission-child[data-student-id="${studentId}"]`
+        );
+        childRows.forEach(r => r.style.display = newState ? "" : "none");
+      };
+
+      toggleBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        toggle();
+      });
+      parentTr.addEventListener("click", () => toggle());
+    });
+
+    renderPaginationControls();
 }
 
 function renderPaginationControls() {
@@ -499,16 +554,71 @@ function renderCourseTable(records) {
     return;
   }
 
+  
+  // --- GROUP BY studentName ---
+  const grouped = {};
   records.forEach(r => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${r.studentName}</td>
-      <td>${r.type}</td>
-      <td>${r.title}</td>
-      <td>${r.date}</td>
-      <td>${r.status}</td>
+    const name = r.studentName || "Unknown Student";
+    if (!grouped[name]) grouped[name] = [];
+    grouped[name].push(r);
+  });
+
+  // We'll give each student a stable id during this render so we can
+  // match parent row to child rows easily.
+  let idx = 0;
+  Object.keys(grouped).forEach(studentName => {
+    const studentId = "student_" + (idx++);
+
+    // Parent row: student name + toggle button + count
+    const parentTr = document.createElement("tr");
+    parentTr.classList.add("student-parent");
+    parentTr.dataset.studentId = studentId;
+
+    parentTr.innerHTML = `
+      <td colspan="5" style="background:#f5f5f5; font-weight:600; cursor:pointer; padding:8px;">
+        <button class="toggle-btn" aria-expanded="false" style="margin-right:10px; cursor:pointer;">▶</button>
+        <span class="student-name">${studentName}</span>
+        <small style="margin-left:8px; color:#666;">(${grouped[studentName].length} activities)</small>
+      </td>
     `;
-    tbody.appendChild(tr);
+    tbody.appendChild(parentTr);
+
+    // Child rows (hidden by default)
+    grouped[studentName].forEach(r => {
+      const childTr = document.createElement("tr");
+      childTr.classList.add("student-child");
+      childTr.dataset.studentId = studentId;
+      childTr.style.display = "none"; // hidden by default
+
+      childTr.innerHTML = `
+        <td></td>
+        <td>${r.type}</td>
+        <td>${r.title}</td>
+        <td>${r.date}</td>
+        <td>${r.status}</td>
+      `;
+      tbody.appendChild(childTr);
+    });
+
+    // Toggle logic (click button OR click the parent row)
+    const toggleBtn = parentTr.querySelector(".toggle-btn");
+    const toggle = () => {
+      const expanded = toggleBtn.getAttribute("aria-expanded") === "true";
+      const newState = !expanded;
+      toggleBtn.setAttribute("aria-expanded", String(newState));
+      toggleBtn.innerHTML = newState ? "&#9660;" : "&#9658;"; 
+
+      // show/hide only the rows for this studentId
+      const childRows = tbody.querySelectorAll(`tr.student-child[data-student-id="${studentId}"]`);
+      childRows.forEach(r => r.style.display = newState ? "" : "none");
+    };
+
+    // stopPropagation on button so clicking it won't trigger parentTr click twice
+    toggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggle();
+    });
+    parentTr.addEventListener("click", () => toggle());
   });
 }
 

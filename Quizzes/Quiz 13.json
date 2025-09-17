@@ -1,0 +1,35 @@
+{
+  "title": "Lesson 13 Quiz: Drills and Fasteners",
+  "questions": [
+    {
+      "id": 1,
+      "q": "Which type of drill is a stationary tool that allows precise and repeatable holes?",
+      "options": ["Hand Drill", "Power Drill", "Drill Press", "Cordless Drill"],
+      "answer": "Drill Press"
+    },
+    {
+      "id": 2,
+      "q": "What type of screw is designed for outdoor use with corrosion resistance?",
+      "options": ["Drywall Screw", "Wood Screw", "Exterior Screw", "Machine Screw"],
+      "answer": "Exterior Screw"
+    },
+    {
+      "id": 3,
+      "q": "Which fastener has no threads but offers better shear strength?",
+      "options": ["Screw", "Nail", "Bolt", "Rivet"],
+      "answer": "Nail"
+    },
+    {
+      "id": 4,
+      "q": "Which hinge is commonly used on doors, with two plates joined by a pin?",
+      "options": ["Piano Hinge", "Butt Hinge", "Barrel Hinge", "Strap Hinge"],
+      "answer": "Butt Hinge"
+    },
+    {
+      "id": 5,
+      "q": "What is the small hole drilled to guide screws and prevent wood from splitting?",
+      "options": ["Chuck", "Countersink", "Pilot Hole", "Torque"],
+      "answer": "Pilot Hole"
+    }
+  ]
+}

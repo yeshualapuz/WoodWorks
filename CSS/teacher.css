@@ -58,7 +58,6 @@ nav.sidebar-nav button.active {
   border-left-color: #f5f0e6;
   outline: none;
 }
-
 /* Main content area */
 main.content {
   flex-grow: 1;
@@ -95,6 +94,256 @@ main.content header h1 {
 .logout-btn:hover {
   background-color: #8d6e63;
 }
+
+/* Container aligned to the right */
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* push to right */
+  gap: 8px; /* space between input and icon */
+  margin-bottom: 15px;
+}
+
+/* Input field */
+#student-search {
+  width: 280px;
+  padding: 10px 14px;
+  border: 2px solid #b2936f;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #5a3e1b;
+  background-color: #fff8f0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#student-search::placeholder {
+  color: #a08260;
+}
+
+#student-search:focus {
+  outline: none;
+  border-color: #8b5e3c;
+  box-shadow: 0 0 5px rgba(139, 94, 60, 0.4);
+}
+
+/* Search icon image */
+.search-icon {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.search-icon:hover {
+  transform: scale(1.1);
+}
+
+#prevPageBtn,
+#nextPageBtn {
+  background-color: #8B5E3C; /* medium brown */
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  margin: 8px 4px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover effect */
+#prevPageBtn:hover:not(:disabled),
+#nextPageBtn:hover {
+  background-color: #A97455; /* lighter brown */
+  transform: translateY(-2px);
+}
+
+/* Disabled state */
+#prevPageBtn:disabled,
+#nextPageBtn:disabled {
+  background-color: #cbb7a4; /* muted brown/gray */
+  cursor: not-allowed;
+  transform: none;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #6e4e23;   /* warm brown */
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.toggle-btn:hover {
+  color: #a87c4f;   /* lighter brown hover */
+  transform: scale(1.2);
+}
+
+
+/* Container */
+#announcements-list {
+  margin-top: 20px;
+  padding: 20px;
+  background: #fffdf9;       /* soft cream */
+  border: 1px solid #e4d3bd; /* subtle border */
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(90, 62, 27, 0.12);
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+/* --- Parent Row --- */
+.submission-parent {
+  background: #f8f3ef; /* light beige */
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.submission-parent:hover {
+  background: #f2eae4;
+}
+
+.submission-parent td {
+  padding: 10px 14px;
+  font-size: 15px;
+  border-bottom: 1px solid #e0d6ce;
+}
+
+/* --- Child Rows --- */
+.submission-child {
+  background: #fcf8f4; /* slightly lighter */
+  transition: background 0.2s ease;
+}
+
+.submission-child:nth-child(even) {
+  background: #fff1e5; /* stripe effect */
+}
+
+.submission-child td {
+  padding: 15px 14px;
+  font-size: 15px;
+  border-bottom: 1px solid #faf0e9;
+}
+
+.submission-child:hover {
+  background: #f3ede7;
+}
+
+/* --- Toggle Button --- */
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  margin-right: 8px;
+  transition: transform 0.25s ease;
+}
+
+.toggle-btn[aria-expanded="true"] {
+  transform: rotate(90deg);
+}
+
+/* --- Badge Style --- */
+.submission-parent small {
+  font-size: 15px;
+  color: #6b4d3f;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-left: 8px;
+}
+
+
+/* Scrollbar */
+#announcements-list::-webkit-scrollbar {
+  width: 8px;
+}
+#announcements-list::-webkit-scrollbar-thumb {
+  background: #b2936f;
+  border-radius: 6px;
+}
+#announcements-list::-webkit-scrollbar-track {
+  background: #f5f0e6;
+  border-radius: 6px;
+}
+
+/* Each announcement card */
+.announcement {
+  background: #fff;
+  border: 1px solid #e7dac7;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(90, 62, 27, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.announcement:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(90, 62, 27, 0.15);
+}
+
+/* Header (date + delete btn inline) */
+.announcement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Date */
+.announcement .date {
+  font-size: 14px;
+  color: #7a5a38;
+  font-weight: 600;
+}
+
+/* Message */
+.announcement .message {
+  font-size: 15px;
+  color: #3c2a1a;
+  line-height: 1.5;
+}
+
+/* Delete button */
+.delete-announcement-btn {
+  background: none;
+  border: none;
+  color: #b04b43;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.delete-announcement-btn:hover {
+  color: #f0ece2;
+}
+
+
+/* Delete button */
+.delete-announcement-btn {
+  background: #856741;   /* red tone */
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: flex-end; /* para mapunta sa right */
+  transition: background 0.2s ease;
+}
+
+.delete-announcement-btn:hover {
+  background: #522f02;   /* darker red */
+}
+
+
 
 /* Section styling */
 section {

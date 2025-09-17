@@ -1,0 +1,35 @@
+{
+  "title": "Lesson 12 Quiz: Gluing and Clamping",
+  "questions": [
+    {
+      "id": 1,
+      "q": "Which type of glue expands as it dries, making it useful for filling small gaps and offering water resistance?",
+      "options": ["Epoxy", "PVA Glue", "Polyurethane Glue", "Hide Glue"],
+      "answer": "Polyurethane Glue"
+    },
+    {
+      "id": 2,
+      "q": "What is the main advantage of epoxy glue in woodworking?",
+      "options": ["Easy to disassemble", "Dries clear and quickly", "Creates a very strong and waterproof bond", "Expands during curing"],
+      "answer": "Creates a very strong and waterproof bond"
+    },
+    {
+      "id": 3,
+      "q": "Which clamp is specifically designed for large panels, doors, or tabletops?",
+      "options": ["Spring Hand Clamp", "Sash Clamp", "Speed Clamp", "C-Clamp"],
+      "answer": "Sash Clamp"
+    },
+    {
+      "id": 4,
+      "q": "Which of the following safety practices should always be observed when gluing and clamping?",
+      "options": ["Use metal hammers with clamps", "Overtighten clamps for stronger pressure", "Avoid ventilation to prevent glue from drying too fast", "Wear gloves and work in a well-ventilated area"],
+      "answer": "Wear gloves and work in a well-ventilated area"
+    },
+    {
+      "id": 5,
+      "q": "A Speed Clamp (Quick-Grip Clamp) is most useful when:",
+      "options": ["Holding large tabletops under heavy pressure", "Making quick adjustments with one hand", "Applying pressure to curved objects", "Replacing the need for glue in joinery"],
+      "answer": "Making quick adjustments with one hand"
+    }
+  ]
+}

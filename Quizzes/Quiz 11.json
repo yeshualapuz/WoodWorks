@@ -1,0 +1,35 @@
+{
+  "title": "Lesson 11 Quiz: More Joineries in Woodworking",
+  "questions": [
+    {
+      "id": 1,
+      "q": "Which joint features interlocking rectangular “fingers” that fit together with glue?",
+      "options": ["Corner-Bridle Joint", "Comb (Finger) Joint", "Through-Dovetail Joint", "Dowel Joint"],
+      "answer": "Comb (Finger) Joint"
+    },
+    {
+      "id": 2,
+      "q": "The Corner-Bridle Joint is commonly used for:",
+      "options": ["Tabletops and panels", "Frames, furniture legs, and cabinet corners", "Ready-to-assemble DIY furniture", "Shelves reinforced with metal brackets"],
+      "answer": "Frames, furniture legs, and cabinet corners"
+    },
+    {
+      "id": 3,
+      "q": "Which modern connector uses oval-shaped compressed wood pieces that expand when glued?",
+      "options": ["Dowel Joint", "Pocket-Hole Screw", "Biscuit Joint", "Metal Bracket"],
+      "answer": "Biscuit Joint"
+    },
+    {
+      "id": 4,
+      "q": "The Through-Dovetail Joint is well known for being:",
+      "options": ["Weak but quick to assemble", "Hidden and invisible after assembly", "Strong, decorative, and visible from both sides", "Only useful in temporary constructions"],
+      "answer": "Strong, decorative, and visible from both sides"
+    },
+    {
+      "id": 5,
+      "q": "Pocket-Hole Screws are best described as:",
+      "options": ["Angled screws driven into predrilled holes for fast, strong fastening", "Wooden pegs used with glue for frame assembly", "Steel brackets attached with nails for reinforcement", "Dovetail pins and tails interlocked for beauty and strength"],
+      "answer": "Angled screws driven into predrilled holes for fast, strong fastening"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "title": "Lesson 15 Quiz: Sealing, Staining, and Finishing",
+  "questions": [
+    {
+      "id": 1,
+      "q": "What is the main purpose of sealing wood before staining or finishing?",
+      "options": ["To make the wood heavier", "To prevent blotchy absorption and create a smooth base", "To speed up drying of stains", "To add permanent color"],
+      "answer": "To prevent blotchy absorption and create a smooth base"
+    },
+    {
+      "id": 2,
+      "q": "Which sealer is best for light-colored woods because it resists yellowing over time?",
+      "options": ["Polyurethane", "Shellac", "Polycrylic Clear Matte", "Wax finish"],
+      "answer": "Polycrylic Clear Matte"
+    },
+    {
+      "id": 3,
+      "q": "Which type of stain is thick and works best on vertical surfaces to avoid drips?",
+      "options": ["Oil-based stain", "Water-based stain", "Gel stain", "NGR stain"],
+      "answer": "Gel stain"
+    },
+    {
+      "id": 4,
+      "q": "What is the main difference between oils (like tung or linseed) and varnishes?",
+      "options": ["Oils penetrate deeply, varnishes stay on the surface for stronger protection", "Varnishes are natural, oils are synthetic", "Oils always give a glossy finish, varnishes are always matte", "Oils require spraying, varnishes require brushing only"],
+      "answer": "Oils penetrate deeply, varnishes stay on the surface for stronger protection"
+    },
+    {
+      "id": 5,
+      "q": "If a wood finish turns cloudy or dull, what is the most likely cause?",
+      "options": ["Too much sanding", "Excess glue in the wood", "Moisture trapped under the finish or poor preparation", "Using too many thin coats"],
+      "answer": "Moisture trapped under the finish or poor preparation"
+    }
+  ]
+}

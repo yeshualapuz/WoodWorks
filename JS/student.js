@@ -20,20 +20,25 @@ let currentUID = null;
 
 const lessons = [
   { title: "Lesson 1: Understanding wood types for your crafts", file: "../Lessons/Lesson-1.pdf" },
-  { title: "Lesson 2: Tools and Safety in the Wood Working shop", file: "../Lessons/Lesson-2.pdf" },
-  { title: "Lesson 3: Saws Used in Woodworking", file: "../Lessons/Lesson-3.pdf" },
-  { title: "Lesson 4: Types Of Planes", file: "../Lessons/Lesson-4.pdf" },
+  { title: "Lesson 2: Tools and Safety in the Wood Working shop", file: "../Lessons/Lesson-2.pdf" , link: "https://youtu.be/S8iLg2NkChI?si=-EmPW8SfcBD__nnd", icon: "../images/yt.png" },
+  { title: "Lesson 3: Saws Used in Woodworking", file: "../Lessons/Lesson-3.pdf" , link: "https://youtu.be/S8iLg2NkChI?si=-EmPW8SfcBD__nnd", icon: "../images/yt.png"},
+  { title: "Lesson 4: Types Of Planes", file: "../Lessons/Lesson-4.pdf", link: "https://youtu.be/S8iLg2NkChI?si=-EmPW8SfcBD__nnd", icon: "../images/yt.png" },
   { title: "Lesson 5: Understanding Chisels in Woodworking", file: "../Lessons/Lesson-5.pdf" },
-  { title: "Lesson 6: Measuring and Marking Tools", file: "../Lessons/Lesson-6.pdf" },
+  { title: "Lesson 6: Measuring and Marking Tools", file: "../Lessons/Lesson-6.pdf", link: "https://youtu.be/pxU40CA5id8?si=yLMOfxPux7DUxyt-", icon: "../images/yt.png" },
   { title: "Lesson 7: Squares and Directional Tools", file: "../Lessons/Lesson-7.pdf" },
-  { title: "Lesson 8: ------------------", file: "../Lessons/Lesson-8.pdf" },
+  { title: "Lesson 8: ------------------------------------", file: "../Lessons/Lesson-12.pdf" },
   { title: "Lesson 9: Wood Preparation for Wood Joinery", file: "../Lessons/Lesson-9.pdf" },
-  { title: "Lesson 10: Wood Joinery for Construction", file: "../Lessons/Lesson-10.pdf" }
+  { title: "Lesson 10: Wood Joinery for Construction", file: "../Lessons/Lesson-10.pdf" , link: "https://youtu.be/IcILLtJUnXY?si=t1MASfYEwy2GB_RD", icon: "../images/yt.png"  },
+  { title: "Lesson 11: More Joineries in Woodworking", file: "../Lessons/Lesson-11.pdf" },
+  { title: "Lesson 12: Glueing and Clamping", file: "../Lessons/Lesson-12.pdf" },
+  { title: "Lesson 13: Drills and Fasteners", file: "../Lessons/Lesson-13.pdf" },
+  { title: "Lesson 14: Finishing Techniques", file: "../Lessons/Lesson-14.pdf" },
+  { title: "Lesson 15: Sealing, Staining and Finishing", file: "../Lessons/Lesson-15.pdf" }
 ];
 
 const quizzes = lessons.map((lesson, index) => ({
   title: `Quiz ${index + 1}`,
-  file: `quiz${index + 1}`
+  file: `Quiz ${index + 1}`
 }));
 
 function capitalize(str) {
@@ -65,6 +70,9 @@ onAuthStateChanged(auth, async user => {
   } else {
     window.location.href = "login.html";
   }
+await loadActivities();   // populate activity textareas if previously submitted
+initActivityListeners();  // attach submit buttons
+
 });
 
 window.showAlert = function(message) {
@@ -90,6 +98,7 @@ async function renderLessons() {
     html += `<li>
       ${lessons[i].title} 
       <a href="${lessons[i].file}" target="_blank" rel="noopener" data-index="${i}" class="lesson-link">[Open Lesson]</a>
+      ${lessons[i].link && lessons[i].icon ? `<img src="${lessons[i].icon}" class="yt-icon" style="width:25px;cursor:pointer;" onclick="window.open('${lessons[i].link}', '_blank')">` : ""}
       <span id="lesson-status-${i}" style="margin-left:10px;color:${opened ? 'green' : 'gray'};">
         ${opened ? "Opened" : ""}
       </span>
@@ -116,25 +125,114 @@ async function renderLessons() {
   });
 }
 
+// ============ ACTIVITIES: load/save & listeners ============
+async function loadActivities() {
+  const activities = ["activity1", "activity2", "activity3"];
+  for (const act of activities) {
+    const snap = await getDoc(doc(db, `users/${currentUID}/activities/${act}`));
+    if (snap.exists()) {
+      const data = snap.data();
+      const ta = document.getElementById(`${act}-text`);
+      if (ta) ta.value = data.answer || "";
+    }
+  }
+}
+
+async function saveActivity(activityId, answer) {
+  // save to Firestore (merge)
+  await setDoc(doc(db, `users/${currentUID}/activities/${activityId}`), {
+    answer,
+    submittedAt: new Date()
+  }, { merge: true });
+
+  const feedback = document.getElementById(`${activityId}-feedback`);
+  if (feedback) {
+    feedback.textContent = "✅ Your answer was saved!";
+    setTimeout(() => feedback.textContent = "", 3000);
+  }
+
+  // ✅ Hide the activity card after saving
+  const activityCard = document.getElementById(activityId);
+  if (activityCard) activityCard.classList.remove("active");
+
+  // update UI/progress
+  await renderQuizzes();      // refresh activity buttons / checkmarks
+  await renderTaskTable();
+  await renderProgressReport();
+}
+
+function initActivityListeners() {
+  document.querySelectorAll(".submit-activity").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const activityId = btn.getAttribute("data-activity");
+      const textarea = document.getElementById(`${activityId}-text`);
+      if (!textarea || !textarea.value.trim()) {
+        showAlert("Please write your answer before submitting.");
+        return;
+      }
+      btn.disabled = true;
+      await saveActivity(activityId, textarea.value.trim());
+      btn.disabled = false;
+    });
+  });
+}
+
+
 async function renderQuizzes() {
   const container = document.getElementById("quiz-container");
   if (!container) return;
 
+  // 1) prefetch quiz docs
+  const quizResults = [];
+  for (let i = 0; i < quizzes.length; i++) {
+    const snap = await getDoc(doc(db, `users/${currentUID}/quizzes/${quizzes[i].file}`));
+    quizResults.push(snap.exists() ? snap.data() : { unlocked: false, score: null, total: null, percent: null });
+  }
+
+  // 2) prefetch activities
+  const activityIds = ["activity1", "activity2", "activity3"];
+  const activitiesData = {};
+  for (const act of activityIds) {
+    const snap = await getDoc(doc(db, `users/${currentUID}/activities/${act}`));
+    activitiesData[act] = snap.exists() ? snap.data() : null;
+  }
+
+  // 3) build HTML (insert activity buttons at desired indexes)
   let html = `<h3>Quizzes</h3><div id="quiz-buttons"><ul>`;
   for (let i = 0; i < quizzes.length; i++) {
-    const quizRef = doc(db, `users/${currentUID}/quizzes/${quizzes[i].file}`);
-    const quizSnap = await getDoc(quizRef);
-    const quizData = quizSnap.exists() ? quizSnap.data() : { unlocked: false, score: 0, total: 0, percent: 0 };
-
+    // insert Activity 1 before Quiz 6 (i === 5)
+    if (i === 5) {
+      const unlocked = quizResults.slice(0, 5).every(q => q && q.score !== null && q.score > 0);
+      const completed = activitiesData.activity1 && activitiesData.activity1.answer?.trim();
+      html += `<li><button class="activity-btn" data-target="activity1" data-activity="activity1" ${unlocked ? "" : "disabled"}>${completed ? '<span class="activity-done">✓</span>' : ''}--- Activity 1 ---</button></li>`;
+    }
+    // insert Activity 2 before Quiz 11 (i === 10)
+    if (i === 10) {
+      const unlocked = quizResults.slice(5, 10).every(q => q && q.score !== null && q.score > 0);
+      const completed = activitiesData.activity2 && activitiesData.activity2.answer?.trim();
+      html += `<li><button class="activity-btn" data-target="activity2" data-activity="activity2" ${unlocked ? "" : "disabled"}>${completed ? '<span class="activity-done">✓</span>' : ''}--- Activity 2 ---</button></li>`;
+    }
+    
+    const qData = quizResults[i];
     html += `<li>
-      <button data-file="${quizzes[i].file}" ${!quizData.unlocked ? "disabled" : ""}>${quizzes[i].title}</button>
-      ${quizData.score ? `<span class="quiz-score">Score: ${quizData.score}/${quizData.total} (${quizData.percent}%)</span>` : ""}
+      <button data-file="${quizzes[i].file}" ${!qData.unlocked ? "disabled" : ""}>${quizzes[i].title}</button>
+      ${qData.score ? `<span class="quiz-score">Score: ${qData.score}/${qData.total} (${qData.percent}%)</span>` : ""}
     </li>`;
   }
+  // Activity 3 after Quiz 15
+const unlocked3 = quizResults.slice(10, 15).every(q => q && q.score !== null);
+const completed3 = activitiesData.activity3 && activitiesData.activity3.answer?.trim();
+html += `<li>
+  <button class="activity-btn" data-target="activity3" data-activity="activity3" ${unlocked3 ? "" : "disabled"}>
+    ${completed3 ? '<span class="activity-done">✓</span>' : ''}--- Activity 3 ---
+  </button>
+</li>`;
+
   html += `</ul></div>`;
   container.innerHTML = html;
 
-  document.querySelectorAll("#quiz-buttons button").forEach(btn => {
+  // 4) attach quiz button listeners (same behavior as before)
+  document.querySelectorAll("#quiz-buttons button[data-file]").forEach(btn => {
     btn.addEventListener("click", async () => {
       const quizFile = btn.getAttribute("data-file");
       const quizRef = doc(db, `users/${currentUID}/quizzes/${quizFile}`);
@@ -148,7 +246,37 @@ async function renderQuizzes() {
       startQuiz(quizFile);
     });
   });
+
+  // 5) attach activity button listeners (scroll or locked alert)
+  document.querySelectorAll(".activity-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (btn.disabled) {
+        showAlert("Complete the required quizzes first to unlock this activity.");
+        return;
+      }
+
+        // ✅ Prevent reopening if already completed
+      if (btn.classList.contains("completed")) {
+        showAlert("You've already submitted this activity. ✅");
+        return;
+      }
+
+      const targetId = btn.getAttribute("data-target");
+      const target = document.getElementById(targetId);
+      if (target) {
+      // ✅ Hide all activity cards first
+      document.querySelectorAll(".activity-card").forEach(c => c.classList.remove("active"));
+      
+      // ✅ Show only the clicked one
+      target.classList.add("active");
+      
+      // ✅ Smooth scroll to it
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    });
+  });
 }
+
 
 function renderQuiz(quiz) {
   const container = document.getElementById("quiz-container");
@@ -276,7 +404,7 @@ async function renderTaskTable() {
   for (let i = 0; i < lessons.length; i++) {
     const lessonSnap = await getDoc(doc(db, `users/${currentUID}/lessons/${i}`));
     const opened = lessonSnap.exists() ? lessonSnap.data().opened : false;
-    const status = opened ? "Completed" : "Unlocked";
+    const status = opened ? '<b style="color:green;">Completed</b>' : "Unlocked";
     const tr = document.createElement("tr");
     tr.innerHTML = `<td>Lesson ${i + 1}</td><td>${status}</td>`;
     tbody.appendChild(tr);
@@ -285,11 +413,24 @@ async function renderTaskTable() {
   for (let i = 0; i < quizzes.length; i++) {
     const quizSnap = await getDoc(doc(db, `users/${currentUID}/quizzes/${quizzes[i].file}`));
     const quizData = quizSnap.exists() ? quizSnap.data() : { unlocked: false, score: null, percent: null };
-    const status = quizData.score !== null ? `Completed (${quizData.percent}%)` : (quizData.unlocked ? "Unlocked" : "Locked");
+    const status = quizData.score !== null ? `<b style="color:green;">Completed</b> (${quizData.percent}%)`  : (quizData.unlocked ? "Unlocked" : "Locked");
     const tr = document.createElement("tr");
     tr.innerHTML = `<td>Quiz ${i + 1}</td><td>${status}</td>`;
     tbody.appendChild(tr);
   }
+
+  // Add Activities to Task Progress Table
+const activities = ["activity1", "activity2", "activity3"];
+for (let i = 0; i < activities.length; i++) {
+  const ref = doc(db, `users/${currentUID}/activities/${activities[i]}`);
+  const snap = await getDoc(ref);
+  const completed = snap.exists() && snap.data().answer?.trim() !== "";
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>Activity ${i + 1}</td><td>${completed ? '<b style="color:green;">Completed</b>' : "Pending"}</td>`;
+  tbody.appendChild(tr);
+}
+
+
 }
 
 async function renderAnnouncement() {
@@ -362,4 +503,20 @@ async function renderProgressReport() {
   } catch (err) {
     console.error("Error saving progress:", err);
   }
+
+  // Activities contribute 100% each when submitted
+const activities = ["activity1", "activity2", "activity3"];
+for (let i = 0; i < activities.length; i++) {
+  const snap = await getDoc(doc(db, `users/${currentUID}/activities/${activities[i]}`));
+  const completed = snap.exists() && snap.data().answer?.trim() !== "";
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>Activity ${i + 1}</td><td>${completed ? "Submitted" : "-"}</td>`;
+  tbody.appendChild(tr);
+
+  if (completed) {
+    totalPercent += 100; // treat activity as 100%
+    completedCount++;
+  }
+}
+
 }
