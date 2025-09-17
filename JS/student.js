@@ -219,14 +219,12 @@ async function renderQuizzes() {
       ${qData.score ? `<span class="quiz-score">Score: ${qData.score}/${qData.total} (${qData.percent}%)</span>` : ""}
     </li>`;
   }
-  // Activity 3 after Quiz 15
-const unlocked3 = quizResults.slice(10, 15).every(q => q && q.score !== null);
-const completed3 = activitiesData.activity3 && activitiesData.activity3.answer?.trim();
-html += `<li>
-  <button class="activity-btn" data-target="activity3" data-activity="activity3" ${unlocked3 ? "" : "disabled"}>
-    ${completed3 ? '<span class="activity-done">✓</span>' : ''}--- Activity 3 ---
-  </button>
-</li>`;
+      // Activity 3 after Quiz 15
+    const unlocked3 = quizResults.slice(10, 15).every(q => q && q.score !== null);
+    const completed3 = activitiesData.activity3 && activitiesData.activity3.answer?.trim();
+    html += `<li>
+      <button class="activity-btn" data-target="activity3" data-activity="activity3" ${unlocked3 ? "" : "disabled"}> ${completed3 ? '<span class="activity-done">✓</span>' : ''}--- Activity 3 --- </button>
+    </li>`;
 
   html += `</ul></div>`;
   container.innerHTML = html;
