@@ -32,13 +32,15 @@
   <main class="content" role="main" tabindex="-1">
     <header><h1>S.A.W Woodworking - Teacher <span id="teacherName" class="teacher-name"></span>'s Dashboard</h1></header>
     <section id="section-courses" aria-labelledby="title-courses" tabindex="0">
-        <table aria-describedby="desc-courses" role="grid">
+      <input type="text" id="student-search" placeholder="Search student by name..." style="margin-bottom:10px; padding:5px; width:300px;">
+        <table>
           <thead>
             <tr>
-              <th scope="col">Course Name</th>
-              <th scope="col">Students Enrolled</th>
-              <th scope="col">Modules</th>
-              <th scope="col">Status</th>
+              <th>Student Name</th>
+              <th>Type</th>
+              <th>Unit Number</th>
+              <th>Started On</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody id="courses-tbody"></tbody>
@@ -85,24 +87,19 @@
       </div>
     </div>
 
-    <section id="section-announcements" aria-labelledby="title-announcements" tabindex="0" hidden>
-      <h2 id="title-announcements">Post Announcement</h2>
+<section id="section-announcements" aria-labelledby="title-announcements" tabindex="0" hidden>
+  <h2 id="title-announcements">Post Announcement</h2>
 
-      <div id="announcement-messages" style="margin-top:10px; font-weight:bold;">
-      <form id="announcement-form">
-        <textarea id="announcement-text" placeholder="Write your announcement here..." required></textarea>
-        <button type="submit">Post Announcement</button>
-      </form>
-      </div>
+  <div id="announcement-messages" style="margin-top:10px; font-weight:bold;"></div>
 
-      <div id="latest-announcement-block" style="margin-top:20px; display:none;">
-        <h3>Latest Announcement</h3>
-        <p><strong>Name:</strong> <span id="latest-teacher-name"></span></p>
-        <p><strong>Date:</strong> <span id="latest-announcement-date"></span></p>
-        <p><strong>Note:</strong> <span id="latest-announcement-note"></span></p>
-        <button id="delete-announcement" style="display:none;">Delete Announcement</button>
-      </div>
-    </section>
+  <form id="announcement-form">
+    <textarea id="announcement-text" placeholder="Write your announcement here..." required></textarea>
+    <button type="submit">Post Announcement</button>
+  </form>
+
+  <div id="announcements-list" style="margin-top:20px;"></div>
+</section>
+
   </main>
 </body>
 </html>

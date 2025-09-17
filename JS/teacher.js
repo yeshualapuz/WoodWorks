@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { collection, getDocs, getFirestore, doc, getDoc, setDoc, deleteDoc, query, orderBy, limit, startAfter } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, getDocs, getFirestore, doc, getDoc, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAubnoJNXMp0eJ9A2bQM1FaOfMlk6X0Les",
@@ -60,15 +60,10 @@ btnAnnouncements.addEventListener("click", () => setActiveSection("announcements
 document.addEventListener("DOMContentLoaded", () => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      renderLatestAnnouncement();
       loadAndSortStudents();
       loadSubmissions();
-
-      function capitalize(str) {
-        return str && str.length > 0
-          ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-          : "";
-      }
+      renderAnnouncements();
+      loadCourses();
 
       try {
         const ref = doc(db, "users", user.uid);
@@ -98,6 +93,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+function capitalize(str) {
+  return str && str.length > 0
+    ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+    : "";
+}
+
 const announcementForm = document.getElementById("announcement-form");
 const announcementText = document.getElementById("announcement-text");
 const announcementMessages = document.getElementById("announcement-messages");
@@ -120,21 +121,30 @@ announcementForm.addEventListener("submit", async (e) => {
     const snapshot = await getDoc(ref);
     if (snapshot.exists()) {
       const data = snapshot.data();
-      teacherName = [data.firstName, data.lastName].filter(Boolean).join(" ") || teacherName;
+      const firstName = capitalize(data.firstName);
+      const lastName = capitalize(data.lastName);
+      teacherName = [firstName, lastName].filter(Boolean).join(" ") || teacherName;
     }
 
-    const announcementRef = doc(db, "announcements", "latest");
-    await setDoc(announcementRef, {
+    const now = new Date();
+    const date = now.toISOString().split("T")[0];
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+    const announcementsRef = collection(db, "announcements");
+    await addDoc(announcementsRef, {
       teacherId: user.uid,
       teacherName,
-      date: new Date().toISOString().split("T")[0],
-      note
+      date,
+      time,
+      note,
+      timestamp: now
     });
 
     announcementMessages.textContent = "Announcement posted successfully!";
     announcementMessages.style.color = "green";
     announcementText.value = "";
-    renderLatestAnnouncement();
+
+    renderAnnouncements();
 
   } catch (err) {
     console.error("Error posting announcement:", err);
@@ -143,57 +153,49 @@ announcementForm.addEventListener("submit", async (e) => {
   }
 });
 
-async function renderLatestAnnouncement() {
-  const block = document.getElementById("latest-announcement-block");
-  const nameElem = document.getElementById("latest-teacher-name");
-  const dateElem = document.getElementById("latest-announcement-date");
-  const noteElem = document.getElementById("latest-announcement-note");
-  const deleteBtn = document.getElementById("delete-announcement");
+async function renderAnnouncements() {
+  const container = document.getElementById("announcements-list");
+  container.innerHTML = "<p>Loading announcements...</p>";
 
   try {
-    const ref = doc(db, "announcements", "latest");
-    const snap = await getDoc(ref);
+    const querySnapshot = await getDocs(collection(db, "announcements"));
+    let announcements = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    if (snap.exists()) {
-      const data = snap.data();
-      nameElem.textContent = data.teacherName || "";
-      dateElem.textContent = data.date || "";
-      noteElem.textContent = data.note || "";
+    announcements.sort((a, b) => b.timestamp?.toMillis() - a.timestamp?.toMillis());
 
-      block.style.display = "block";
-      if (auth.currentUser && auth.currentUser.uid === data.teacherId) {
-        deleteBtn.style.display = "inline-block";
-      } else {
-        deleteBtn.style.display = "none";
-      }
-    } else {
-      block.style.display = "none";
+    if (announcements.length === 0) {
+      container.innerHTML = "<p>No announcements yet...</p>";
+      return;
     }
+    container.innerHTML = "";
+    announcements.forEach(a => {
+      const block = document.createElement("div");
+      block.style.border = "1px solid #ccc";
+      block.style.padding = "10px";
+      block.style.marginBottom = "10px";
+      block.style.borderRadius = "5px";
+
+      block.innerHTML = `
+        <p><strong>${a.teacherName}</strong> posted on ${a.date} at ${a.time}</p>
+        <p>${a.note}</p>
+        ${auth.currentUser && auth.currentUser.uid === a.teacherId ? `<button data-id="${a.id}" class="delete-announcement-btn">Delete</button>` : ""}
+      `;
+      container.appendChild(block);
+    });
+    document.querySelectorAll(".delete-announcement-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("Are you sure you want to delete this announcement?")) return;
+        const docId = btn.getAttribute("data-id");
+        await deleteDoc(doc(db, "announcements", docId));
+        renderAnnouncements();
+      });
+    });
+
   } catch (err) {
-    console.error("Error fetching announcement:", err);
-    block.style.display = "none";
+    console.error("Error loading announcements:", err);
+    container.innerHTML = "<p>Error loading announcements.</p>";
   }
 }
-
-const deleteBtn = document.getElementById("delete-announcement");
-
-deleteBtn.addEventListener("click", async () => {
-  if (!confirm("Are you sure you want to delete this announcement?")) return;
-
-  try {
-    const announcementRef = doc(db, "announcements", "latest");
-    await deleteDoc(announcementRef);
-
-    document.getElementById("latest-teacher-name").textContent = "";
-    document.getElementById("latest-announcement-date").textContent = "";
-    document.getElementById("latest-announcement-note").textContent = "No announcement yet...";
-
-    alert("Announcement deleted.");
-  } catch (err) {
-    console.error("Error deleting announcement:", err);
-    alert("Failed to delete announcement.");
-  }
-});
 
 document.getElementById("logout-btn").addEventListener("click", () => {
   signOut(auth).then(() => {
@@ -225,15 +227,12 @@ async function loadAndSortStudents() {
       ? data.lastName.charAt(0).toUpperCase() + data.lastName.slice(1).toLowerCase()
       : "";
     const fullName = (first + " " + last).trim() || data.email || docSnap.id;
-
     const lessonsSnap = await getDocs(collection(db, `users/${docSnap.id}/lessons`));
     const lessonsOpened = lessonsSnap.docs.filter(d => d.data().opened).length;
     const lessonPercent = TOTAL_LESSONS > 0 ? Math.round((lessonsOpened / TOTAL_LESSONS) * 100) : 0;
-
     const quizzesSnap = await getDocs(collection(db, `users/${docSnap.id}/quizzes`));
     const quizzesTaken = quizzesSnap.docs.filter(d => d.data().score !== undefined).length;
     const quizPercent = TOTAL_QUIZZES > 0 ? Math.round((quizzesTaken / TOTAL_QUIZZES) * 100) : 0;
-
     const overallProgress = Math.round((lessonPercent + quizPercent) / 2);
 
     students.push({ fullName, overallProgress });
@@ -269,7 +268,6 @@ function renderCurrentPage() {
     `;
     tbody.appendChild(tr);
   }
-
   updatePaginationButtons();
 }
 
@@ -291,7 +289,6 @@ document.getElementById("prevPageBtn").addEventListener("click", () => {
     renderCurrentPage();
   }
 });
-
 loadAndSortStudents();
 
 let submissionPage = 1;
@@ -314,20 +311,17 @@ async function loadSubmissions(page = 1) {
       const first = userData.firstName ? userData.firstName.charAt(0).toUpperCase() + userData.firstName.slice(1).toLowerCase() : "";
       const last = userData.lastName ? userData.lastName.charAt(0).toUpperCase() + userData.lastName.slice(1).toLowerCase() : "";
       const fullName = `${first} ${last}`.trim() || userData.email || userId;
-
       const quizzesSnap = await getDocs(collection(db, `users/${userId}/quizzes`));
+
       for (const quizDoc of quizzesSnap.docs) {
         const quizData = quizDoc.data();
         const quizName = quizData.title || quizDoc.id;
         const score = quizData.score;
-
         const timestamp = quizData.timestamp?.toDate?.();
         const submittedDate = timestamp
           ? timestamp.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
           : "N/A";
-
         const status = score !== undefined ? "Completed" : "Incomplete";
-
         submissions.push({
           fullName,
           quizName,
@@ -336,12 +330,10 @@ async function loadSubmissions(page = 1) {
         });
       }
     }
-
     if (submissions.length === 0) {
       tbody.innerHTML = `<tr><td colspan="4">No submissions found.</td></tr>`;
       return;
     }
-
     submissions.sort((a, b) => a.fullName.localeCompare(b.fullName));
 
     allSubmissions = submissions; 
@@ -373,7 +365,6 @@ function renderSubmissionsPage(page) {
     `;
     tbody.appendChild(tr);
   }
-
   renderPaginationControls();
 }
 
@@ -426,3 +417,98 @@ function renderPaginationControls() {
   });
   pagination.appendChild(nextBtn);
 }
+
+let allStudentRecords = []; // store all fetched records for search/filter
+
+async function loadCourses() {
+  const tbody = document.getElementById("courses-tbody");
+  const searchInput = document.getElementById("student-search");
+
+  if (!tbody || !searchInput) return;
+  tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
+
+  try {
+    allStudentRecords = [];
+    const usersSnap = await getDocs(collection(db, "users"));
+
+    for (const userDoc of usersSnap.docs) {
+      const userData = userDoc.data();
+      if (!userData || userData.role !== "student") continue;
+
+      const studentName = `${capitalize(userData.firstName)} ${capitalize(userData.lastName)}`.trim() || userData.email || userDoc.id;
+
+      // --- LESSONS ---
+      const lessonsSnap = await getDocs(collection(db, `users/${userDoc.id}/lessons`));
+      lessonsSnap.forEach(lessonDoc => {
+        const lesson = lessonDoc.data();
+        const startDate = lesson.startDate
+          ? (lesson.startDate.toDate ? lesson.startDate.toDate().toLocaleDateString("en-US") : lesson.startDate)
+          : "N/A";
+
+        let status = "Ongoing";
+        if (lesson.completed) status = "Completed";
+        else if (lesson.failed) status = "Failed";
+
+        allStudentRecords.push({
+          studentName,
+          type: "Lesson",
+          title: lesson.courseName || `Lesson ${lessonDoc.id}`,
+          date: startDate,
+          status
+        });
+      });
+
+      // --- QUIZZES ---
+      const quizzesSnap = await getDocs(collection(db, `users/${userDoc.id}/quizzes`));
+      quizzesSnap.forEach(quizDoc => {
+        const quiz = quizDoc.data();
+        const date = quiz.timestamp ? (quiz.timestamp.toDate ? quiz.timestamp.toDate().toLocaleDateString("en-US") : quiz.timestamp) : "N/A";
+        const status = quiz.score !== undefined ? `Completed (${quiz.percent ?? 0}%)` : (quiz.unlocked ? "Unlocked" : "Locked");
+
+        allStudentRecords.push({
+          studentName,
+          type: "Quiz",
+          title: quiz.title || quizDoc.id,
+          date,
+          status
+        });
+      });
+    }
+
+    renderCourseTable(allStudentRecords);
+
+    // --- Search Filter ---
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.trim().toLowerCase();
+      const filtered = allStudentRecords.filter(r => r.studentName.toLowerCase().includes(query));
+      renderCourseTable(filtered);
+    });
+
+  } catch (err) {
+    console.error("Error loading courses:", err);
+    tbody.innerHTML = "<tr><td colspan='5'>Error loading courses.</td></tr>";
+  }
+}
+
+function renderCourseTable(records) {
+  const tbody = document.getElementById("courses-tbody");
+  tbody.innerHTML = "";
+
+  if (!records.length) {
+    tbody.innerHTML = "<tr><td colspan='5'>No records found.</td></tr>";
+    return;
+  }
+
+  records.forEach(r => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r.studentName}</td>
+      <td>${r.type}</td>
+      <td>${r.title}</td>
+      <td>${r.date}</td>
+      <td>${r.status}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+

@@ -102,7 +102,7 @@ async function renderLessons() {
     link.addEventListener("click", async e => {
       const index = +e.currentTarget.getAttribute("data-index");
       const lessonRef = doc(db, `users/${currentUID}/lessons/${index}`);
-      await setDoc(lessonRef, { opened: true }, { merge: true });
+      await setDoc(lessonRef, { opened: true, startDate: new Date() }, { merge: true });
 
       document.getElementById(`lesson-status-${index}`).textContent = "Opened";
       document.getElementById(`lesson-status-${index}`).style.color = "green";
@@ -237,7 +237,18 @@ async function evaluateQuiz(quiz) {
   const percent = Math.round((score / total) * 100);
 
   const quizRef = doc(db, `users/${currentUID}/quizzes/${quiz.file}`);
-  await setDoc(quizRef, { unlocked: true, score, total, percent, timestamp: new Date() }, { merge: true });
+  const quizSnap = await getDoc(quizRef);
+
+  if (!quizSnap.exists()) {
+    await setDoc(quizRef, { unlocked: true, score, total, percent, timestamp: new Date() }, { merge: true });
+  } else {
+    const previousPercent = quizSnap.data().percent || 0;
+    if (percent > previousPercent) {
+      await setDoc(quizRef, { score, total, percent, timestamp: new Date() }, { merge: true });
+    } else {
+      await setDoc(quizRef, { unlocked: true }, { merge: true });
+    }
+  }
 
   setTimeout(() => {
     renderQuizzes();
@@ -255,7 +266,6 @@ async function evaluateQuiz(quiz) {
 
   renderProgressReport();
 }
-
 
 async function renderTaskTable() {
   const tbody = document.getElementById("task-tbody");
@@ -353,4 +363,3 @@ async function renderProgressReport() {
     console.error("Error saving progress:", err);
   }
 }
-
