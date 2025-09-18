@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
@@ -532,28 +532,35 @@ async function renderAnnouncement() {
   const container = document.getElementById("teacher-announcement");
 
   try {
-    const announcementRef = doc(db, "announcements", "latest");
-    const snap = await getDoc(announcementRef);
+    const q = query(collection(db, "announcements"), orderBy("timestamp", "desc"));
+    const snapshot = await getDocs(q);
 
-    if (snap.exists()) {
-      const data = snap.data();
+    if (snapshot.empty) {
       container.innerHTML = `
-        <h3>Teacher Announcement</h3>
-        <p><strong>Name:</strong> ${data.teacherName || ""}</p>
-        <p><strong>Date:</strong> ${data.date || ""}</p>
-        <p><strong>Note:</strong> ${data.note || ""}</p>
+        <h3>Teacher Announcements</h3>
+        <p>No announcements yet...</p>
       `;
-    } else {
-      container.innerHTML = `
-        <h3>Teacher Announcement</h3>
-        <p>No announcement yet...</p>
-      `;
+      return;
     }
+
+    // Build stacked announcements
+    let html = `<h3>Teacher Announcements</h3>`;
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      html += `
+        <div class="announcement-item" style="border:1px solid #fde7d2; padding:10px; margin-bottom:10px; border-radius:5px;">
+          <p><strong>${data.teacherName || "Unknown"}</strong> posted on ${data.date || ""} at ${data.time || ""}</p>
+          <p>${data.note || ""}</p>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
   } catch (err) {
-    console.error("Error loading announcement:", err);
+    console.error("Error loading announcements:", err);
     container.innerHTML = `
-      <h3>Teacher Announcement</h3>
-      <p>No announcement yet...</p>
+      <h3>Teacher Announcements</h3>
+      <p>Error loading announcements.</p>
     `;
   }
 }
@@ -573,18 +580,39 @@ async function renderProgressReport() {
   let totalPercent = 0;
   let completedCount = 0;
 
-  for (let i = 0; i < quizzes.length; i++) {
-    const quizSnap = await getDoc(doc(db, `users/${currentUID}/quizzes/${quizzes[i].file}`));
-    const quizData = quizSnap.exists() ? quizSnap.data() : { score: null, total: null, percent: null };
+for (let i = 0; i < quizzes.length; i++) {
+  const quizSnap = await getDoc(doc(db, `users/${currentUID}/quizzes/${quizzes[i].file}`));
+  const rawData = quizSnap.exists() ? quizSnap.data() : {};
+  const quizData = {
+    score: rawData.score ?? null,
+    total: rawData.total ?? null,
+    percent: rawData.percent ?? null
+  };
 
-    const scoreText = quizData.score !== null ? `${quizData.score}/${quizData.total}` : "-";
-    
+  const scoreText = (quizData.score !== null && quizData.total !== null)
+    ? `${quizData.score}/${quizData.total}`
+    : "-";
+
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${quizzes[i].title}</td><td>${scoreText}</td>`;
+  tbody.appendChild(tr);
+
+  if (typeof quizData.percent === "number") {
+    totalPercent += quizData.percent;
+    completedCount++;
+  }
+}
+
+  const activities = ["activity1", "activity2", "activity3"];
+  for (let i = 0; i < activities.length; i++) {
+    const snap = await getDoc(doc(db, `users/${currentUID}/activities/${activities[i]}`));
+    const completed = snap.exists() && snap.data().answer?.trim() !== "";
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${quizzes[i].title}</td><td>${scoreText}</td>`;
+    tr.innerHTML = `<td>Activity ${i + 1}</td><td>${completed ? "Submitted" : "-"}</td>`;
     tbody.appendChild(tr);
 
-    if (quizData.percent !== null) {
-      totalPercent += quizData.percent;
+    if (completed) {
+      totalPercent += 100; 
       completedCount++;
     }
   }
@@ -598,20 +626,4 @@ async function renderProgressReport() {
   } catch (err) {
     console.error("Error saving progress:", err);
   }
-
-  // Activities contribute 100% each when submitted
-const activities = ["activity1", "activity2", "activity3"];
-for (let i = 0; i < activities.length; i++) {
-  const snap = await getDoc(doc(db, `users/${currentUID}/activities/${activities[i]}`));
-  const completed = snap.exists() && snap.data().answer?.trim() !== "";
-  const tr = document.createElement("tr");
-  tr.innerHTML = `<td>Activity ${i + 1}</td><td>${completed ? "Submitted" : "-"}</td>`;
-  tbody.appendChild(tr);
-
-  if (completed) {
-    totalPercent += 100; // treat activity as 100%
-    completedCount++;
-  }
-}
-
 }
