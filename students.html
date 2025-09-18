@@ -22,6 +22,7 @@
     <nav>
       <a href="#" class="active" onclick="showTab(event, 'workshop')">My Workshop</a>
       <a href="#" onclick="showTab(event, 'courses')">Woodworking Lessons</a>
+      <a href="#" onclick="showTab(event, 'games')">Wood Games</a>
     </nav>
     <button class="logout-btn" id="logout-btn">Log Out</button>
   </aside>
@@ -70,76 +71,42 @@
     <div class="quizzes-list">
       <div id="quiz-container">
       </div>
-              <!-- ===== ACTIVITY SECTIONS ===== -->
+          <!-- Activity 1 -->
           <div id="activity1" class="activity-card">
             <h3>Activity 1: Safety and Proper Use of Tools</h3>
-            <p>Write an essay (300–400 words) discussing the importance of safety practices in the woodworking workshop. 
-              Include why using the right tools and maintaining them properly are important for woodworkers. 
-              Share at least one real-life example or scenario where safety or proper tool use is applied. 
-              Submit on one short sheet of bond paper.</p>
+            <p>Write an essay (300–400 words) discussing the importance of safety practices in the woodworking workshop. Include why using the right tools and maintaining them properly are important for woodworkers. Share at least one real-life example or scenario where safety or proper tool use is applied. Submit on one short sheet of bond paper.</p>
             <textarea id="activity1-text" rows="4" placeholder="Type your answer here..."></textarea>
             <button class="submit-activity" data-activity="activity1">Submit Activity 1</button>
-            <!-- ✅ NEW FILE UPLOAD BUTTON -->
+
+            <!-- File Upload -->
             <input type="file" id="activity1-file" style="display:none;" />
             <button class="upload-activity" data-activity="activity1">Upload File</button>
-
-            <div id="activity1-file-feedback" style="font-size:0.9em;color:green;"></div>          
-      </div>
-
-          <div id="activity2" class="activity-card">
-            <h3>Activity 2: Basic Wood Joinery </h3>
-            <p>On an A3 bond paper, draw and illustrate the following 10 basic wood joinery joints in Isometric perspective. Each drawing must be neat, proportionate, and properly labeled. Follow the prescribed border format with correct title block placement for uniformity. 
-              Accuracy, clarity, and neatness will be considered in the evaluation.
-            
-              The joints to be illustrated are:
-                Butt Joint
-                Cross-halving Joint
-                Corner-halving Joint
-                Dovetail Half-lap Joint
-                Dado Joint
-                Dovetail Housing Joint
-                Butt-miter Joint
-                Mitered Half-lap Joint
-                Keyed Miter Joint
-                Mortise-and-tenon Joint
-
-
-            </p>
-            <textarea id="activity2-text" rows="4" placeholder="Type your answer here..."></textarea>
-            <button class="submit-activity" data-activity="activity2">Submit Activity 2</button>
-            <!-- ✅ NEW FILE UPLOAD BUTTON -->
-            <input type="file" id="activity1-file" style="display:none;" />
-            <button class="upload-activity" data-activity="activity1">Upload File</button>
-
-            <div id="activity1-file-feedback" style="font-size:0.9em;color:green;"></div>          
+            <div id="activity1-file-feedback" style="font-size:0.9em;color:green;"></div>
           </div>
 
-          <div id="activity3" class="activity-card">
-            <h3>Activity 3 : Constructing the 10 Basic Wood Joints</h3>
-            <p>Construct 10 basic woodworking joints using actual wood pieces, ensuring each is made with accuracy, proper alignment, and neatness. Use clean, uniform wood pieces and the appropriate tools to cut, fit, and assemble the joints, minimizing gaps and sanding rough edges if necessary. 
-              Each completed joint must be labeled with a small tag or sticker indicating its name.
-            
-            The joints must include:
-              Butt joint
-              Cross-halving joint
-              Corner-halving joint
-              Dovetail half-lap joint
-              Dado joint
-              Dovetail housing joint
-              Butt-miter joint
-              Mitered half-lap joint
-              Keyed miter joint
-              Mortise-and-tenon joint
+          <!-- Activity 2 -->
+          <div id="activity2" class="activity-card">
+            <h3>Activity 2: Basic Wood Joinery</h3>
+            <p>Draw and illustrate 10 basic wood joinery joints...</p>
+            <textarea id="activity2-text" rows="4" placeholder="Type your answer here..."></textarea>
+            <button class="submit-activity" data-activity="activity2">Submit Activity 2</button>
 
-            </p>
+            <input type="file" id="activity2-file" style="display:none;" />
+            <button class="upload-activity" data-activity="activity2">Upload File</button>
+            <div id="activity2-file-feedback" style="font-size:0.9em;color:green;"></div>
+          </div>
+
+          <!-- Activity 3 -->
+          <div id="activity3" class="activity-card">
+            <h3>Activity 3: Constructing the 10 Basic Wood Joints</h3>
+            <p>Construct 10 basic woodworking joints using actual wood pieces...</p>
             <textarea id="activity3-text" rows="4" placeholder="Type your answer here..."></textarea>
             <button class="submit-activity" data-activity="activity3">Submit Activity 3</button>
-            <!-- ✅ NEW FILE UPLOAD BUTTON -->
-            <input type="file" id="activity1-file" style="display:none;" />
-            <button class="upload-activity" data-activity="activity1">Upload File</button>
 
-            <div id="activity1-file-feedback" style="font-size:0.9em;color:green;"></div>                    </div>
-    </div>
+            <input type="file" id="activity3-file" style="display:none;" />
+            <button class="upload-activity" data-activity="activity3">Upload File</button>
+            <div id="activity3-file-feedback" style="font-size:0.9em;color:green;"></div>
+         </div>
 
     <div id="certificate-container" style="display:none; text-align:center; margin-top:30px;">
     <h3>You earned your Certificate</h3>
@@ -150,25 +117,47 @@
   <div class="report-wrapper">
       <div id="report-container">
         <h3>Progress Report</h3>
-        <table id="report-table" border="1">
-          <thead>
-            <tr>
-              <th>Quiz</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-          <tfoot>
-            <tr>
-              <td><strong>Overall Average</strong></td>
-              <td id="overall-average"></td>
-            </tr>
-          </tfoot>
-        </table>
-        <button id="download-report">Download Report</button>
-      </div>
+          <table id="report-table" border="1">
+            <thead>
+              <tr>
+                <th>Quiz</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+              <tr>
+                <td><strong>Overall Average</strong></td>
+                <td id="overall-average"></td>
+              </tr>
+            </tfoot>
+          </table>
+          <button id="download-report">Download Report</button>
+        </div>
+      </div>  
     </div>
+  </section>
+
+  <!-- Games Tab -->
+<section id="games" class="tab">
+  <!-- Game 1 -->
+  <div class="game-box">
+    <h3>Game 1: Wood Tour Map</h3>
+    <iframe src="https://view.genially.com/68cbb1ab8808b73e812c6b9c" allowfullscreen></iframe>
   </div>
+
+  <!-- Game 2 -->
+  <div class="game-box">
+    <h3>Game 2: Guess the Hidden Image</h3>
+    <iframe src="https://view.genially.com/68cbc9915e68689b807cf063" allowfullscreen></iframe>
+  </div>
+
+  <!-- Game 3 -->
+  <div class="game-box">
+    <h3>Game 3: Image Matching Game</h3>
+    <iframe src="https://view.genially.com/68cbd5d54baabf34d8eeeb2f" allowfullscreen></iframe>
+  </div>
+</section>
 
 
   <div id="customAlert" class="custom-alert">
@@ -181,13 +170,15 @@
 
   <script>
     function showTab(event, tabId) {
-      if (event && event.preventDefault) event.preventDefault();
+  if (event && event.preventDefault) event.preventDefault();
 
-      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      document.querySelectorAll('aside nav a').forEach(link => link.classList.remove('active'));
-      if (event && event.currentTarget) event.currentTarget.classList.add('active');
-    }
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+
+  document.querySelectorAll('aside nav a').forEach(link => link.classList.remove('active'));
+  if (event && event.currentTarget) event.currentTarget.classList.add('active');
+}
+
   </script>
 </body>
 </html>

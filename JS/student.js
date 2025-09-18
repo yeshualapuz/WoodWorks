@@ -22,6 +22,8 @@ const storage = getStorage(app);
 let currentUID = null;
 
 
+
+
 const lessons = [
   { title: "Lesson 1: Understanding wood types for your crafts", file: "../Lessons/Lesson-1.pdf" },
   { title: "Lesson 2: Tools and Safety in the Wood Working shop", file: "../Lessons/Lesson-2.pdf" , link: "https://youtu.be/S8iLg2NkChI?si=-EmPW8SfcBD__nnd", icon: "../images/yt.png" },
@@ -174,68 +176,96 @@ async function saveActivity(activityId, answer) {
   await renderProgressReport();
 }
 
+// Show uploaded file with ❌ delete button
+function showUploadedFile(activityId, fileName, fileURL) {
+  const feedbackDiv = document.getElementById(`${activityId}-file-feedback`);
+  feedbackDiv.innerHTML = ""; // clear previous content
+
+  const container = document.createElement("div");
+  container.classList.add("uploaded-file");
+
+  // clickable file link
+  const fileLink = document.createElement("a");
+  fileLink.href = fileURL;
+  fileLink.textContent = `${fileName}`;
+  fileLink.target = "_blank";
+  fileLink.classList.add("file-link");
+
+  // delete button (X)
+  const deleteBtn = document.createElement("button");
+  deleteBtn.innerHTML = "&times;";
+  deleteBtn.classList.add("delete-file-btn");
+  deleteBtn.title = "Delete file";
+
+  deleteBtn.addEventListener("click", async () => {
+    const confirmDelete = confirm("Are you sure you want to delete this file?");
+    if (!confirmDelete) return;
+
+    await deleteUploadedFile(activityId, fileName);
+
+    // ✅ Clear file preview
+    feedbackDiv.innerHTML = "";
+
+    // ✅ Reset the file input so the same file can be re-selected
+    const fileInput = document.getElementById(`${activityId}-file`);
+    if (fileInput) fileInput.value = "";
+
+    alert("File deleted successfully. You can now upload a new one.");
+  });
+
+  container.appendChild(fileLink);
+  container.appendChild(deleteBtn);
+  feedbackDiv.appendChild(container);
+}
+
+
+// Upload file function
 async function uploadActivityFile(activityId, file) {
   try {
-    const storageRef = ref(storage, `users/${currentUID}/activities/${activityId}/${file.name}`);
+    const uniqueName = `${Date.now()}_${file.name}`; // ✅ avoid overwriting
+    const storageRef = ref(storage, `activities/${currentUID}/${activityId}/${uniqueName}`);
     await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(storageRef);
+    const fileURL = await getDownloadURL(storageRef);
 
     await setDoc(doc(db, `users/${currentUID}/activities/${activityId}`), {
-      fileURL: downloadURL,
-      fileName: file.name,
-      uploadedAt: new Date()
+      fileName: uniqueName,
+      fileURL: fileURL
     }, { merge: true });
 
-    showUploadedFile(activityId, file.name, downloadURL); // ✅ Display immediately
-    showAlert("File uploaded. Please submit activity.");
-  } catch (error) {
-    console.error("Upload failed:", error);
-    showAlert("Failed to upload file. Please try again.");
+    showUploadedFile(activityId, uniqueName, fileURL);
+  } catch (err) {
+    console.error("Error uploading file:", err);
+    alert("❌ Failed to upload file.");
   }
 }
 
 
-async function deleteActivityFile(activityId, fileName) {
+// Delete file from storage & Firestore
+async function deleteUploadedFile(activityId, fileName) {
   try {
-    const fileRef = ref(storage, `users/${currentUID}/activities/${activityId}/${fileName}`);
+    const fileRef = ref(storage, `activities/${currentUID}/${activityId}/${fileName}`);
     await deleteObject(fileRef);
 
-    // Remove file URL from Firestore
+    // remove from Firestore
     await setDoc(doc(db, `users/${currentUID}/activities/${activityId}`), {
-      fileURL: null,
-      fileName: null
+      fileName: null,
+      fileURL: null
     }, { merge: true });
 
-    const feedback = document.getElementById(`${activityId}-file-feedback`);
-    if (feedback) feedback.innerHTML = "❌ File deleted";
+    // Reset file input value so user can re-upload same file name
+    const fileInput = document.getElementById(`${activityId}-file`);
+    if (fileInput) fileInput.value = "";
 
-    showAlert("File deleted successfully.");
-  } catch (error) {
-    console.error("Error deleting file:", error);
-    showAlert("Failed to delete file.");
-  }
-}
-
-function showUploadedFile(activityId, fileName, fileURL) {
-  const feedback = document.getElementById(`${activityId}-file-feedback`);
-  if (!feedback) return;
-
-  feedback.innerHTML = `
-    📄 <a href="${fileURL}" target="_blank">${fileName}</a>
-    <button class="delete-file" data-activity="${activityId}" data-filename="${fileName}">🗑️ Delete</button>
-  `;
-
-  const deleteBtn = feedback.querySelector(".delete-file");
-  if (deleteBtn) {
-    deleteBtn.addEventListener("click", async () => {
-      if (confirm("Are you sure you want to delete this file?")) {
-        await deleteActivityFile(activityId, fileName);
-      }
-    });
+    console.log(`✅ File ${fileName} deleted`);
+  } catch (err) {
+    console.error("❌ Error deleting file:", err);
+    alert("Failed to delete file. Please try again.");
   }
 }
 
 
+
+// Initialize activity listeners
 function initActivityListeners() {
   document.querySelectorAll(".submit-activity").forEach(btn => {
     btn.addEventListener("click", async () => {
@@ -251,28 +281,30 @@ function initActivityListeners() {
     });
   });
 
-  // ✅ NEW listener for upload buttons
-   document.querySelectorAll(".upload-activity").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const activityId = btn.getAttribute("data-activity");
-      const fileInput = document.getElementById(`${activityId}-file`);
-      if (!fileInput) return;
+  // Add event listener for ALL upload buttons
+  document.querySelectorAll(".upload-activity").forEach(button => {
+    button.addEventListener("click", () => {
+      const activity = button.dataset.activity;
+      const fileInput = document.getElementById(`${activity}-file`);
 
+      if (!fileInput) return;
       fileInput.click();
 
-      // ✅ Remove previous 'change' listener to avoid duplicates
-      const newInput = fileInput.cloneNode(true);
-      fileInput.parentNode.replaceChild(newInput, fileInput);
+      fileInput.onchange = () => {
+        const file = fileInput.files[0];
+        if (!file) return;
 
-      newInput.addEventListener("change", async () => {
-        if (newInput.files.length > 0) {
-          await uploadActivityFile(activityId, newInput.files[0]);
-          newInput.value = ""; // reset input so user can reselect
-        }
-      });
+        const feedback = document.getElementById(`${activity}-file-feedback`);
+        feedback.textContent = `✅ Uploaded: ${file.name}`;
+
+        // tawagin mo na lang yung global uploadActivityFile
+        uploadActivityFile(activity, file);
+      };
     });
   });
+
 }
+
 
 
 async function renderQuizzes() {

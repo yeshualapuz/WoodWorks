@@ -138,6 +138,50 @@ main.content header h1 {
   transform: scale(1.1);
 }
 
+/* Pagination wrapper */
+#pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 15px;
+}
+
+/* All pagination buttons */
+#pagination-controls button {
+  background-color: #A97455;   /* neutral brown */
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover */
+#pagination-controls button:hover:not(:disabled) {
+  background-color: #8B5E3C;   /* darker brown */
+  transform: translateY(-2px);
+}
+
+/* Disabled (Prev/Next at edges OR current page) */
+#pagination-controls button:disabled {
+  background-color: #D2B48C;   /* light tan */
+  color: #f5f1e9;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Active page (disabled number buttons, but not Prev/Next) */
+#pagination-controls button:disabled:not(:first-child):not(:last-child) {
+  background-color: #4B3621;   /* darkest brown */
+  font-weight: bold;
+  color: #fff;
+  cursor: default;
+}
+
+
 #prevPageBtn,
 #nextPageBtn {
   background-color: #8B5E3C; /* medium brown */
