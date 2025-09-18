@@ -1,6 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAubnoJNXMp0eJ9A2bQM1FaOfMlk6X0Les",
@@ -14,6 +16,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
+const storage = getStorage(app);
+
 
 let currentUID = null;
 
@@ -67,12 +71,14 @@ onAuthStateChanged(auth, async user => {
     renderTaskTable();
     renderProgressReport();
     renderAnnouncement();
-  } else {
-    window.location.href = "login.html";
-  }
+
 await loadActivities();   // populate activity textareas if previously submitted
 initActivityListeners();  // attach submit buttons
 
+
+  } else {
+    window.location.href = "login.html";
+  }
 });
 
 window.showAlert = function(message) {
@@ -125,6 +131,7 @@ async function renderLessons() {
   });
 }
 
+
 // ============ ACTIVITIES: load/save & listeners ============
 async function loadActivities() {
   const activities = ["activity1", "activity2", "activity3"];
@@ -134,9 +141,15 @@ async function loadActivities() {
       const data = snap.data();
       const ta = document.getElementById(`${act}-text`);
       if (ta) ta.value = data.answer || "";
+
+      // ✅ Show uploaded file if exists
+      if (data && data.fileURL && data.fileName && typeof showUploadedFile === "function") {
+        showUploadedFile(act, data.fileName, data.fileURL);
+      }
     }
   }
 }
+
 
 async function saveActivity(activityId, answer) {
   // save to Firestore (merge)
@@ -161,6 +174,68 @@ async function saveActivity(activityId, answer) {
   await renderProgressReport();
 }
 
+async function uploadActivityFile(activityId, file) {
+  try {
+    const storageRef = ref(storage, `users/${currentUID}/activities/${activityId}/${file.name}`);
+    await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(storageRef);
+
+    await setDoc(doc(db, `users/${currentUID}/activities/${activityId}`), {
+      fileURL: downloadURL,
+      fileName: file.name,
+      uploadedAt: new Date()
+    }, { merge: true });
+
+    showUploadedFile(activityId, file.name, downloadURL); // ✅ Display immediately
+    showAlert("File uploaded. Please submit activity.");
+  } catch (error) {
+    console.error("Upload failed:", error);
+    showAlert("Failed to upload file. Please try again.");
+  }
+}
+
+
+async function deleteActivityFile(activityId, fileName) {
+  try {
+    const fileRef = ref(storage, `users/${currentUID}/activities/${activityId}/${fileName}`);
+    await deleteObject(fileRef);
+
+    // Remove file URL from Firestore
+    await setDoc(doc(db, `users/${currentUID}/activities/${activityId}`), {
+      fileURL: null,
+      fileName: null
+    }, { merge: true });
+
+    const feedback = document.getElementById(`${activityId}-file-feedback`);
+    if (feedback) feedback.innerHTML = "❌ File deleted";
+
+    showAlert("File deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    showAlert("Failed to delete file.");
+  }
+}
+
+function showUploadedFile(activityId, fileName, fileURL) {
+  const feedback = document.getElementById(`${activityId}-file-feedback`);
+  if (!feedback) return;
+
+  feedback.innerHTML = `
+    📄 <a href="${fileURL}" target="_blank">${fileName}</a>
+    <button class="delete-file" data-activity="${activityId}" data-filename="${fileName}">🗑️ Delete</button>
+  `;
+
+  const deleteBtn = feedback.querySelector(".delete-file");
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", async () => {
+      if (confirm("Are you sure you want to delete this file?")) {
+        await deleteActivityFile(activityId, fileName);
+      }
+    });
+  }
+}
+
+
 function initActivityListeners() {
   document.querySelectorAll(".submit-activity").forEach(btn => {
     btn.addEventListener("click", async () => {
@@ -173,6 +248,28 @@ function initActivityListeners() {
       btn.disabled = true;
       await saveActivity(activityId, textarea.value.trim());
       btn.disabled = false;
+    });
+  });
+
+  // ✅ NEW listener for upload buttons
+   document.querySelectorAll(".upload-activity").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const activityId = btn.getAttribute("data-activity");
+      const fileInput = document.getElementById(`${activityId}-file`);
+      if (!fileInput) return;
+
+      fileInput.click();
+
+      // ✅ Remove previous 'change' listener to avoid duplicates
+      const newInput = fileInput.cloneNode(true);
+      fileInput.parentNode.replaceChild(newInput, fileInput);
+
+      newInput.addEventListener("change", async () => {
+        if (newInput.files.length > 0) {
+          await uploadActivityFile(activityId, newInput.files[0]);
+          newInput.value = ""; // reset input so user can reselect
+        }
+      });
     });
   });
 }
