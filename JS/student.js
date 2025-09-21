@@ -32,14 +32,14 @@ const lessons = [
   { title: "Lesson 5: Understanding Chisels in Woodworking", file: "../Lessons/Lesson-5.pdf" },
   { title: "Lesson 6: Measuring and Marking Tools", file: "../Lessons/Lesson-6.pdf", link: "https://youtu.be/pxU40CA5id8?si=yLMOfxPux7DUxyt-", icon: "../images/yt.png" },
   { title: "Lesson 7: Squares and Directional Tools", file: "../Lessons/Lesson-7.pdf" },
-  { title: "Lesson 8: ------------------------------------", file: "../Lessons/Lesson-12.pdf" },
+  { title: "Lesson 8: Sanding Tools", file: "../Lessons/Lesson-8.pdf" },
   { title: "Lesson 9: Wood Preparation for Wood Joinery", file: "../Lessons/Lesson-9.pdf" },
   { title: "Lesson 10: Wood Joinery for Construction", file: "../Lessons/Lesson-10.pdf" , link: "https://youtu.be/IcILLtJUnXY?si=t1MASfYEwy2GB_RD", icon: "../images/yt.png"  },
   { title: "Lesson 11: More Joineries in Woodworking", file: "../Lessons/Lesson-11.pdf" },
   { title: "Lesson 12: Glueing and Clamping", file: "../Lessons/Lesson-12.pdf" },
   { title: "Lesson 13: Drills and Fasteners", file: "../Lessons/Lesson-13.pdf" },
-  { title: "Lesson 14: Finishing Techniques", file: "../Lessons/Lesson-14.pdf" },
-  { title: "Lesson 15: Sealing, Staining and Finishing", file: "../Lessons/Lesson-15.pdf" }
+  { title: "Lesson 14: Finishing Techniques", file: "../Lessons/Lesson-14.pdf" , link: "https://youtu.be/zpCiV9M09XQ?si=YHRU5JGQJkeWmYUD", icon: "../images/yt.png"  },
+  { title: "Lesson 15: Sealing, Staining and Finishing", file: "../Lessons/Lesson-15.pdf" , link: "https://youtu.be/mU_ShOtFZi8?si=GIIN1Ay_pWKfxgU6", icon: "../images/yt.png"  }
 ];
 
 const quizzes = lessons.map((lesson, index) => ({
