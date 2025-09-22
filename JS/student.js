@@ -4,6 +4,7 @@ import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, query, 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyAubnoJNXMp0eJ9A2bQM1FaOfMlk6X0Les",
   authDomain: "woodworks-dc7b3.firebaseapp.com",
@@ -151,7 +152,6 @@ async function loadActivities() {
     }
   }
 }
-
 
 async function saveActivity(activityId, answer) {
   // save to Firestore (merge)
@@ -326,8 +326,13 @@ async function renderQuizzes() {
     activitiesData[act] = snap.exists() ? snap.data() : null;
   }
 
+  
   // 3) build HTML (insert activity buttons at desired indexes)
   let html = `<h3>Quizzes</h3><div id="quiz-buttons"><ul>`;
+  html += `<li>
+  <button class="quiz-btn" data-quiz="pre">--- Pre-Test ---</button></li>`;
+
+  
   for (let i = 0; i < quizzes.length; i++) {
     // insert Activity 1 before Quiz 6 (i === 5)
     if (i === 5) {
@@ -355,6 +360,13 @@ async function renderQuizzes() {
       <button class="activity-btn" data-target="activity3" data-activity="activity3" ${unlocked3 ? "" : "disabled"}> ${completed3 ? '<span class="activity-done">✓</span>' : ''}--- Activity 3 --- </button>
     </li>`;
 
+    // Check if activity 3 completed
+    const postEnabled = !!(activitiesData.activity3 && activitiesData.activity3.answer?.trim());
+  html += `<li>
+    <button class="quiz-btn" data-quiz="post" ${postEnabled ? "" : "disabled"}>--- Post-Test ---</button>
+  </li>`;
+
+
   html += `</ul></div>`;
   container.innerHTML = html;
 
@@ -371,6 +383,30 @@ async function renderQuizzes() {
         return;
       }
       startQuiz(quizFile);
+    });
+  });
+
+
+  // pre/post special quiz buttons (data-quiz)
+  document.querySelectorAll("#quiz-buttons button[data-quiz]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const qKey = btn.getAttribute("data-quiz"); // "pre" or "post"
+      if (qKey === "pre") {
+        // always allow
+        startQuiz("pre");
+        return;
+      }
+      if (qKey === "post") {
+        // ensure Activity 3 submitted
+        const act3Snap = await getDoc(doc(db, `users/${currentUID}/activities/activity3`));
+        const hasAnswer = act3Snap.exists() && act3Snap.data().answer?.trim();
+        if (!hasAnswer) {
+          showAlert("Post-Test is locked. Complete Activity 3 first.");
+          return;
+        }
+        startQuiz("post");
+        return;
+      }
     });
   });
 
@@ -441,19 +477,35 @@ function renderQuiz(quiz) {
   });
 }
 
+// Replace any other startQuiz definitions with this single one
 async function startQuiz(quizFile) {
   try {
-    const res = await fetch(`Quizzes/${quizFile}.json`);
-    if (!res.ok) throw new Error("Quiz file not found");
+    // Normalize "pre" / "post" and keep other names as-is
+    const fileName = (quizFile || "").toString().toLowerCase() === "pre" ? "Pre-Test"
+                   : (quizFile || "").toString().toLowerCase() === "post" ? "Post-Test"
+                   : quizFile;
+
+    console.log(`[startQuiz] Loading quiz file: Quizzes/${fileName}.json`);
+
+    const res = await fetch(`Quizzes/${fileName}.json`);
+    if (!res.ok) throw new Error(`Quiz file not found: Quizzes/${fileName}.json (status ${res.status})`);
     const quiz = await res.json();
-    quiz.file = quizFile;
+
+    if (!quiz || !Array.isArray(quiz.questions)) {
+      throw new Error(`Invalid quiz format for ${fileName}.json`);
+    }
+
+    // Ensure Firestore doc name is exactly the normalized one
+    quiz.file = fileName;
+
     renderQuiz(quiz);
     showTab(null, "courses");
   } catch (err) {
-    console.error(err);
-    showAlert("Failed to load quiz.");
+    console.error("[startQuiz] Error:", err);
+    showAlert("Failed to load quiz: " + (err.message || ""));
   }
 }
+
 
 function setupQuizNavigation(totalQuestions) {
   let current = 0;
@@ -461,8 +513,6 @@ function setupQuizNavigation(totalQuestions) {
   const prevBtn = document.getElementById("prev-btn");
   const nextBtn = document.getElementById("next-btn");
   const submitBtn = document.getElementById("submit-btn");
-  const progressText = document.getElementById("quiz-progress-text");
-  const progressFill = document.querySelector(".progress-fill");
 
   function updateUI() {
     fieldsets.forEach((fs, i) => fs.style.display = i === current ? "block" : "none");
@@ -476,6 +526,12 @@ function setupQuizNavigation(totalQuestions) {
 }
 
 async function evaluateQuiz(quiz) {
+  // ✅ Ensure proper Firestore doc name
+  const fileName =
+    quiz.file?.toLowerCase() === "pre" ? "Pre-Test" :
+    quiz.file?.toLowerCase() === "post" ? "Post-Test" :
+    quiz.file;
+
   let score = 0;
   quiz.questions.forEach((q, index) => {
     const selected = document.querySelector(`input[name="question-${index}"]:checked`);
@@ -491,7 +547,8 @@ async function evaluateQuiz(quiz) {
   const total = quiz.questions.length;
   const percent = Math.round((score / total) * 100);
 
-  const quizRef = doc(db, `users/${currentUID}/quizzes/${quiz.file}`);
+  // ✅ Use normalized file name
+  const quizRef = doc(db, `users/${currentUID}/quizzes/${fileName}`);
   const quizSnap = await getDoc(quizRef);
 
   if (!quizSnap.exists()) {
@@ -522,6 +579,7 @@ async function evaluateQuiz(quiz) {
   renderProgressReport();
 }
 
+
 async function renderTaskTable() {
   const tbody = document.getElementById("task-tbody");
   if (!tbody) return;
@@ -537,6 +595,14 @@ async function renderTaskTable() {
     tbody.appendChild(tr);
   }
 
+  // ✅ Pre-Test
+  const preSnap = await getDoc(doc(db, `users/${currentUID}/quizzes/Pre-Test`));
+  const preData = preSnap.exists() ? preSnap.data() : {};
+  const preStatus = preData.score !== undefined
+    ? `<b style="color:green;">Completed</b> (${preData.percent}%)`
+    : "Unlocked";
+  tbody.innerHTML += `<tr><td>Pre-Test</td><td>${preStatus}</td></tr>`;
+
   for (let i = 0; i < quizzes.length; i++) {
     const quizSnap = await getDoc(doc(db, `users/${currentUID}/quizzes/${quizzes[i].file}`));
     const quizData = quizSnap.exists() ? quizSnap.data() : { unlocked: false, score: null, percent: null };
@@ -546,18 +612,24 @@ async function renderTaskTable() {
     tbody.appendChild(tr);
   }
 
-  // Add Activities to Task Progress Table
-const activities = ["activity1", "activity2", "activity3"];
-for (let i = 0; i < activities.length; i++) {
-  const ref = doc(db, `users/${currentUID}/activities/${activities[i]}`);
-  const snap = await getDoc(ref);
-  const completed = snap.exists() && snap.data().answer?.trim() !== "";
-  const tr = document.createElement("tr");
-  tr.innerHTML = `<td>Activity ${i + 1}</td><td>${completed ? '<b style="color:green;">Completed</b>' : "Pending"}</td>`;
-  tbody.appendChild(tr);
-}
+    // Add Activities to Task Progress Table
+  const activities = ["activity1", "activity2", "activity3"];
+  for (let i = 0; i < activities.length; i++) {
+    const ref = doc(db, `users/${currentUID}/activities/${activities[i]}`);
+    const snap = await getDoc(ref);
+    const completed = snap.exists() && snap.data().answer?.trim() !== "";
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>Activity ${i + 1}</td><td>${completed ? '<b style="color:green;">Completed</b>' : "Pending"}</td>`;
+    tbody.appendChild(tr);
+  }
 
-
+  // ✅ Post-Test
+    const postSnap = await getDoc(doc(db, `users/${currentUID}/quizzes/Post-Test`));
+    const postData = postSnap.exists() ? postSnap.data() : {};
+    const postStatus = postData.score !== undefined
+      ? `<b style="color:green;">Completed</b> (${postData.percent}%)`
+      : "Locked until Activity 3";
+    tbody.innerHTML += `<tr><td>Post-Test</td><td>${postStatus}</td></tr>`;
 }
 
 async function renderAnnouncement() {
@@ -612,14 +684,25 @@ async function renderProgressReport() {
   let totalPercent = 0;
   let completedCount = 0;
 
-for (let i = 0; i < quizzes.length; i++) {
-  const quizSnap = await getDoc(doc(db, `users/${currentUID}/quizzes/${quizzes[i].file}`));
-  const rawData = quizSnap.exists() ? quizSnap.data() : {};
-  const quizData = {
-    score: rawData.score ?? null,
-    total: rawData.total ?? null,
-    percent: rawData.percent ?? null
-  };
+  // ✅ Pre-Test
+  const preSnap = await getDoc(doc(db, `users/${currentUID}/quizzes/Pre-Test`));
+  const preData = preSnap.exists() ? preSnap.data() : {};
+  tbody.innerHTML += `<tr><td>Pre-Test</td><td>${
+    preData.score !== undefined ? `${preData.score}/${preData.total}` : "-"
+  }</td></tr>`;
+  if (typeof preData.percent === "number") {
+    totalPercent += preData.percent;
+    completedCount++;
+  }
+
+  for (let i = 0; i < quizzes.length; i++) {
+    const quizSnap = await getDoc(doc(db, `users/${currentUID}/quizzes/${quizzes[i].file}`));
+    const rawData = quizSnap.exists() ? quizSnap.data() : {};
+    const quizData = {
+      score: rawData.score ?? null,
+      total: rawData.total ?? null,
+      percent: rawData.percent ?? null
+    };
 
   const scoreText = (quizData.score !== null && quizData.total !== null)
     ? `${quizData.score}/${quizData.total}`
@@ -632,8 +715,8 @@ for (let i = 0; i < quizzes.length; i++) {
   if (typeof quizData.percent === "number") {
     totalPercent += quizData.percent;
     completedCount++;
+    }
   }
-}
 
   const activities = ["activity1", "activity2", "activity3"];
   for (let i = 0; i < activities.length; i++) {
@@ -647,6 +730,17 @@ for (let i = 0; i < quizzes.length; i++) {
       totalPercent += 100; 
       completedCount++;
     }
+  }
+
+  // ✅ Post-Test
+  const postSnap = await getDoc(doc(db, `users/${currentUID}/quizzes/Post-Test`));
+  const postData = postSnap.exists() ? postSnap.data() : {};
+  tbody.innerHTML += `<tr><td>Post-Test</td><td>${
+    postData.score !== undefined ? `${postData.score}/${postData.total}` : "-"
+  }</td></tr>`;
+  if (typeof postData.percent === "number") {
+    totalPercent += postData.percent;
+    completedCount++;
   }
 
   const avgPercent = completedCount > 0 ? Math.round(totalPercent / completedCount) : 0;
